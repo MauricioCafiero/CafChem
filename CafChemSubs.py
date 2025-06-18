@@ -8,7 +8,9 @@ import random
 import re
 import deepchem as dc
 from rdkit import Chem
+from rdkit.Chem import Allchem
 from rdkit.Chem import Draw
+import py3Dmol
 
 sub_locations_re = ["cc",                          #first unsubstituted carbons encountered
                 "c[1-9]cc",                        #unsubstituted carbon 2 of ring
@@ -368,3 +370,45 @@ def gen_mask(smile_in: str, percent_masked: float) -> str:
     out_text = "Invalid SMILES string"
     img = None
   return final_smiles, final_entropy, qeds, mols, out_text, img  
+
+def smileToXYZ(smile: str, filename: str) -> str:
+  """
+     Add H's to a SMILES string, make it 3D, optimize with MMFF from RDKit
+     and return an XYZ string and file.
+    
+    Args:
+        smile: The SMILES string of the molecule
+        filename: The name of the file to save the XYZ string.
+        
+    Returns:
+        The XYZ structure string; also saves a file.
+  """
+
+  mol = Chem.MolFromSmiles(smile)
+  molH = Chem.AddHs(mol)
+  AllChem.EmbedMolecule(molH)
+  AllChem.MMFFOptimizeMolecule(molH)
+
+  num_atoms = molH.GetNumAtoms()
+  xyz_string = f"{num_atoms}\n\n"
+
+  for atom in molH.GetAtoms():
+    atom_sym = atom.GetSymbol()
+    pos = molH.GetConformer().GetAtomPosition(atom.GetIdx())
+    xyz_string += f"{atom_sym} {pos.x} {pos.y} {pos.z}\n"
+
+  with open(filename, 'w') as f:
+    f.write(xyz_string)
+  print(f"XYZ file saved as {filename}")
+
+  return xyz_string
+
+def visualize_molecule(xyz_string: str):
+  '''
+    input an XYZ string to vosualize the molecule in 3D
+  '''
+  viewer = py3Dmol.view(width=800, height=400)
+  viewer.addModel(xyz_string, "xyz")  
+  viewer.setStyle({"stick": {}, "sphere": {"radius": 0.5}})
+  viewer.zoomTo()
+  viewer.show()
