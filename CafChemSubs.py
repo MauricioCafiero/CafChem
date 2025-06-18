@@ -8,7 +8,7 @@ import random
 import re
 import deepchem as dc
 from rdkit import Chem
-from rdkit.Chem import Allchem
+from rdkit.Chem import AllChem
 from rdkit.Chem import Draw
 import py3Dmol
 
