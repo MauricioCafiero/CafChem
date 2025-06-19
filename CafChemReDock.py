@@ -170,6 +170,9 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
 
     #calculate energy of the compex
     pl_complex = atoms + as_mol
+    total_spin = spin + target_obj["spin"] - 1
+    total_charge = charge + target_obj["charge"]
+    pl_complex.info.update({"spin": total_spin, "charge": total_charge})
     pl_complex.calc = calculator
     print(f"The size of the complex is: {len(pl_complex)}")
     pl_complex_energy = pl_complex.get_potential_energy()
