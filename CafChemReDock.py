@@ -57,7 +57,7 @@ def dock_dataframe(filename: str, target_protein: str, num_cpus: int, key = "SMI
   for smile in df[key]:
     try:
       print(f"Docking molecule {i+1}.")
-      score, aux = target.dock(smile, num_cpus = cpuCount)
+      score, aux = target.dock(smile, num_cpus = num_cpus)
       save_pose(aux['ligand'],score,"trial",saved_index)
       saved_index += 1
     except:
@@ -88,7 +88,7 @@ def dock_list(smiles_list: list, target_protein: str, num_cpus: int):
   for smile in smiles_list:
     try:
       print(f"Docking molecule {i+1}.")
-      score, aux = target.dock(smile, num_cpus = cpuCount)
+      score, aux = target.dock(smile, num_cpus = num_cpus)
       save_pose(aux['ligand'],score,"trial",saved_index)
       saved_index += 1
     except:
@@ -111,7 +111,7 @@ def dock_smiles(smile: str, target_protein: str, num_cpus: int):
   print("===============================================")
   print(f"Docking molecule.")
   try: 
-    score, aux = target.dock(smile, num_cpus = cpuCount)
+    score, aux = target.dock(smile, num_cpus = num_cpus)
     save_pose(aux['ligand'],score,"trial",1)
   except:
     print(f"Molecule could not be docked!")
