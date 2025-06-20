@@ -12,6 +12,8 @@ import os
 import py3Dmol
 import ase.io
 from ase import Atoms
+from ase.optimize import BFGS
+from ase.constraints import FixAtoms
 from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
 global HMGCR_data
@@ -127,6 +129,103 @@ def dock_smiles(smile: str, target_protein: str, num_cpus: int):
   return score
 
 def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
+                    charge: int, spin: int, optFlag = False):
+  '''
+    retrieve a molecule from an SDF file, add protons, and calculate the energy
+    using Meta's UMA MLIP.
+    
+    Args:
+      filename_base: the SDF filename without the sdf extension
+      target: the target protein to dock in followed by _data
+      calculator: the FAIRCHEM calculator
+      charge: charge of the molecule
+      spin: spin multiplicity of the molecule
+      optFlag = True -> optimizes the complex, False -> does not optimize the complex
+    Returns:
+      None; complex structures are saved as XYZ files
+  '''
+  filename = filename_base + ".sdf"
+  suppl = Chem.SDMolSupplier(filename)
+
+  total_xyz_list = []
+  for mol in suppl:
+    '''
+    In most cases this loop will only be over one molecule.
+    adds protons to the structure and then makes and XYZ string, 
+    and an ASE atoms object.
+    '''
+    xyz_list = []
+    atoms_list = ""
+    template = mol
+    molH = Chem.AddHs(mol)
+    AllChem.ConstrainedEmbed(molH,template, useTethers=True)
+    xyz_string = f"{molH.GetNumAtoms()}\n\n"
+    for atom in molH.GetAtoms():
+      atoms_list += atom.GetSymbol()
+      pos = molH.GetConformer().GetAtomPosition(atom.GetIdx())
+      temp_tuple = (pos[0], pos[1], pos[2])
+      xyz_list.append(temp_tuple)
+      xyz_string += f"{atom.GetSymbol()} {pos[0]} {pos[1]} {pos[2]}\n"
+
+    '''
+      Put together atoms objects for the ligand and the protein. Combine them 
+      into a single ASE atoms object for the pl complex. Optimize the structure
+      and calculate the energy of the pl complex. Optimization uses a 
+      constraints list from the target object. Separate the optimized complex
+      into new ASE atoms objects for the ligand and the protein. Calculate the
+      energy of each.
+    '''
+    atoms1 = Atoms(atoms_list,xyz_list)     
+    as_mol1 = ase.io.read(target_obj["file_location"], format="xyz")
+    pl_complex = as_mol1 + atoms1
+    total_spin = spin + target_obj["spin"] - 1
+    total_charge = charge + target_obj["charge"]
+    pl_complex.info.update({"spin": total_spin, "charge": total_charge})
+    pl_complex.calc = calculator
+
+    combo_size = len(pl_complex)
+    as_size = len(as_mol1)
+
+    print(f"The size of the complex is: {combo_size}")
+    c = FixAtoms(indices = target_obj["constraints"])
+    pl_complex.set_constraint(c)
+    if optFlag: 
+      dyn = BFGS(pl_complex)
+      dyn.run(fmax=0.1)
+      optimized_energy = pl_complex.get_potential_energy()
+      print(f"Optimized energy of complex is: {0.0367493*optimized_energy:.3f} ha")
+      ase.io.write("optimized_complex.xyz", images=pl_complex, format="xyz")
+    else:
+      optimized_energy = pl_complex.get_potential_energy()
+      print(f"Energy of complex is: {0.0367493*optimized_energy:.3f} ha")
+      ase.io.write("total_complex.xyz", images=pl_complex, format="xyz")
+
+    # build atoms objects 
+    atoms = pl_complex[as_size:]
+    print(f"The size of the ligand is: {len(atoms)}")
+    atoms.info.update({"spin": spin, "charge": charge})
+    atoms.calc = calculator
+    energy = atoms.get_potential_energy()
+    print(f"Energy of ligand is: {0.0367493*energy:.3f} ha")
+
+    #calculate energy of active site
+    as_mol = pl_complex[:as_size]
+    print(f"The size of the active site is: {len(as_mol)}")
+    as_mol.info.update({"spin": target_obj["spin"], "charge": target_obj["charge"]})
+    as_mol.calc = calculator
+    as_energy = as_mol.get_potential_energy()
+    print(f"Energy of active site is: {0.0367493*as_energy:.3f} ha")
+  
+    #calculate the interaction energy
+    print("===========================================================")
+    print(f"Energy difference is: {23.06035*(optimized_energy-as_energy-energy):.3f} kcal/mol")
+
+    # Save the XYZ string(s) and pass back for visualization
+    total_xyz_list.append(xyz_string)
+
+  return total_xyz_list
+
+def old_uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
                     charge: int, spin: int):
   '''
     retrieve a molecule from an SDF file, add protons, and calculate the energy
