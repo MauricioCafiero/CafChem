@@ -18,7 +18,8 @@ global HMGCR_data
 HMGCR_data = {
         "file_location":"CafChem/HMGCR_dude_QM_site.xyz",
         "charge": 3,
-        "spin": 1
+        "spin": 1,
+        "constraints": [1, 11, 16, 24, 33, 41, 54, 60, 72, 83, 92, 98, 107, 124, 132, 140, 148, 159, 168, 181]
         }
 
 def save_pose(pose_mol, pose_score, name,saved_index):
@@ -43,7 +44,7 @@ def dock_dataframe(filename: str, target_protein: str, num_cpus: int, key = "SMI
           DockString database
         num_cpus: the number of CPUs to use for docking
       Returns:
-        None; poses are saved in SDF files.
+        scores: a list of scores; poses are saved in SDF files.
   '''
   df = pd.read_csv(filename)
   target = load_target(target_protein)
@@ -54,15 +55,19 @@ def dock_dataframe(filename: str, target_protein: str, num_cpus: int, key = "SMI
 
   i = 0
   saved_index = 1
+  scores = []
   for smile in df[key]:
     try:
       print(f"Docking molecule {i+1}.")
       score, aux = target.dock(smile, num_cpus = num_cpus)
+      scores.append(score)
       save_pose(aux['ligand'],score,"trial",saved_index)
       saved_index += 1
     except:
       print(f"Molecule {i} could not be docked!")
+      scores.append(0.0)
     i += 1
+  return scores  
 
 def dock_list(smiles_list: list, target_protein: str, num_cpus: int):
   '''
@@ -75,7 +80,7 @@ def dock_list(smiles_list: list, target_protein: str, num_cpus: int):
           DockString database
         num_cpus: the number of CPUs to use for docking
       Returns:
-        None; poses are saved in SDF files.
+        scores: a list of scores; poses are saved in SDF files.
   '''
   target = load_target(target_protein)
   count = len(smiles_list)
@@ -85,15 +90,19 @@ def dock_list(smiles_list: list, target_protein: str, num_cpus: int):
 
   i = 0
   saved_index = 1
+  scores = []
   for smile in smiles_list:
     try:
       print(f"Docking molecule {i+1}.")
       score, aux = target.dock(smile, num_cpus = num_cpus)
+      scores.append(score)
       save_pose(aux['ligand'],score,"trial",saved_index)
       saved_index += 1
     except:
       print(f"Molecule {i} could not be docked!")
+      score.append(0.0)
     i += 1
+  return scores
 
 def dock_smiles(smile: str, target_protein: str, num_cpus: int):
   '''
@@ -105,7 +114,7 @@ def dock_smiles(smile: str, target_protein: str, num_cpus: int):
         DockString database
         num_cpus: the number of CPUs to use for docking
       Returns:
-        None; poses are saved in SDF files.
+        score; poses are saved in SDF files.
   '''
   target = load_target(target_protein)
   print("===============================================")
@@ -115,6 +124,7 @@ def dock_smiles(smile: str, target_protein: str, num_cpus: int):
     save_pose(aux['ligand'],score,"trial",1)
   except:
     print(f"Molecule could not be docked!")
+  return score
 
 def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
                     charge: int, spin: int):
@@ -129,7 +139,7 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
       charge: charge of the molecule
       spin: spin multiplicity of the molecule
     Returns:
-      None
+      total_xyz_list: a list of xyz strings for each molecule in the SDF file
   '''
   filename = filename_base + ".sdf"
   suppl = Chem.SDMolSupplier(filename)
@@ -159,14 +169,14 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
     atoms.info.update({"spin": spin, "charge": charge})
     atoms.calc = calculator
     energy = atoms.get_potential_energy()
-    print(f"Energy of ligand is: {0.0367493*energy:.3f} kcal/mol")
+    print(f"Energy of ligand is: {0.0367493*energy:.3f} ha")
 
     #calculate energy of active site
     as_mol = ase.io.read(target_obj["file_location"], format="xyz")
     as_mol.info.update({"spin": target_obj["spin"], "charge": target_obj["charge"]})
     as_mol.calc = calculator
     as_energy = as_mol.get_potential_energy()
-    print(f"Energy of active site is: {0.0367493*as_energy:.3f} kcal/mol")
+    print(f"Energy of active site is: {0.0367493*as_energy:.3f} ha")
 
     #calculate energy of the compex
     pl_complex = atoms + as_mol
@@ -176,11 +186,11 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
     pl_complex.calc = calculator
     print(f"The size of the complex is: {len(pl_complex)}")
     pl_complex_energy = pl_complex.get_potential_energy()
-    print(f"Energy of complex is: {0.0367493*pl_complex_energy:.3f} kcal/mol")
+    print(f"Energy of complex is: {0.0367493*pl_complex_energy:.3f} ha")
 
     #calculate the interaction energy
     print("===========================================================")
-    print(f"Energy difference is: {0.0367493*(pl_complex_energy-as_energy-energy):.3f} kcal/mol")
+    print(f"Energy difference is: {23.06035*(pl_complex_energy-as_energy-energy):.3f} kcal/mol")
 
     # Save the XYZ string(s) and pass back for visualization
     total_xyz_list.append(xyz_string)
