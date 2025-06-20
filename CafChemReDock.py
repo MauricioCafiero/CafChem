@@ -326,7 +326,7 @@ def complexG16(in_file: str, target_obj: dict, charge: int, spin: int):
 
   total_charge = target_obj["charge"] + charge
   total_spin = target_obj["spin"] + spin - 1
-  as_size = HMGCR_data["size"]
+  as_size = target_obj["size"]
 
   header = "%chk=/scratch2/gaussian/complex.chk\n"
   header += "%mem=32GB\n"
