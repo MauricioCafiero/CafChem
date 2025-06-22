@@ -11,5 +11,9 @@ also see the list of [commonly used code snippets](https://github.com/MauricioCa
 - dock molecular SMILES strings in a protein using DockString and save poses.
 - Calculate the interaction between a docking pose and a trimmed protein active site using Meta's UMA MLIP.
 - visualize molecules.
+## CafChemBML
+- read ChEMBL CSV files and clean data.
+- featurize data, remove outliers, scale, apply PCA and split into training ad validation sets.
+- perform analysis with tree-based methods, linear methods, SVR, and MLP. 
 ## Example notebooks
 - the notebooks folder contains Colab notebooks to demonstrate each CafChem library
