@@ -26,6 +26,18 @@ HMGCR_data = {
         }
 
 def save_pose(pose_mol, pose_score, name,saved_index):
+  '''
+    Save the bext pose (lowest score) from a docking run as an SDF file. 
+    
+    Args:
+        pose_mol: the mol object for the best pose
+        pose_score: the score for the best pose
+        name: a name to use for the SDF file
+        saved_index: a number to attach to the name
+    
+    Returns:
+        None; SDF file is saved.
+  '''
   pose_mol.SetProp('_Name',str(pose_score))
   sdf_filename = f"{name}_{saved_index}.sdf"
   w = Chem.SDWriter(sdf_filename)
@@ -143,7 +155,9 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
       spin: spin multiplicity of the molecule
       optFlag = True -> optimizes the complex, False -> does not optimize the complex
     Returns:
-      None; complex structures are saved as XYZ files
+      ie: the interaction energy between the lignd and the protein active site.
+      total_xyz_list: a list with the xyz strings for the unoptimized ligands
+      complex structures are saved as XYZ files
   '''
   filename = filename_base + ".sdf"
   suppl = Chem.SDMolSupplier(filename)
@@ -219,12 +233,13 @@ def uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCal
   
     #calculate the interaction energy
     print("===========================================================")
-    print(f"Energy difference is: {23.06035*(optimized_energy-as_energy-energy):.3f} kcal/mol")
+    ie = 23.06035*(optimized_energy-as_energy-energy)
+    print(f"Energy difference is: {ie:.3f} kcal/mol")
 
     # Save the XYZ string(s) and pass back for visualization
     total_xyz_list.append(xyz_string)
 
-  return total_xyz_list
+  return ie, total_xyz_list
 
 def old_uma_interaction(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
                     charge: int, spin: int):
