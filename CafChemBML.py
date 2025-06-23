@@ -589,12 +589,12 @@ def predict_with_model(smiles_list: list, model, featurizer = "rdkit", scaler = 
   f = featurizer.featurize(mols)
   
   if scaler != None and pca != None:
-    scaled_f = scaler(f)
-    final_f = pca(scaled_f)
+    scaled_f = scaler.transform(f)
+    final_f = pca.transform(scaled_f)
   elif scaler != None and pca == None:
-    final_f = scaler(f)
+    final_f = scaler.transform(f)
   elif scaler == None and pca != None:
-    final_f = pca(f)
+    final_f = pca.transform(f)
   elif scaler == None and pca == None:
     final_f = f
     
