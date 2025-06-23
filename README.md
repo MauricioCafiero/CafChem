@@ -19,4 +19,4 @@ also see the list of [commonly used code snippets](https://github.com/MauricioCa
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
 ## Example notebooks
-- the notebooks folder contains Colab notebooks to demonstrate each CafChem library
+- the [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
