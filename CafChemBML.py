@@ -207,6 +207,14 @@ def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
       seed: random seed for train/test split (optional)
       splits: fraction of data to use for training (optional)
     Returns:
+      x_train: training feature matrix
+      x_valid: validation feature matrix
+      y_train: training target list
+      y_valid: validation target list
+      smiles_train: training smiles
+      smiles_valid: validation smiles
+      pca: fitted pca model
+      scaler: fitter scaler model
   '''
   y = np.array(y)
   Xa = np.array(Xa)
@@ -229,14 +237,20 @@ def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
     scalername = "StandardScaler"
     scaler.fit(f)
     f_final = scaler.transform(f)
+    pca = None
 
   elif use_scaler == False and use_pca == True:
 
     pca = PCA(n_components=pca_size)
     pca.fit(f)
     f_final = pca.transform(f)
+    scaler = None
+    
+  elif use_scaler == False and use_pca == False:
 
-  seed = 102
+    f_final = f
+    pca = None
+    scaler = None
 
   X_train, X_valid, ys_train, ys_valid = train_test_split(f_final,y_smiles,train_size=splits, 
                                                               random_state=seed, shuffle=True)
@@ -248,7 +262,7 @@ def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
 
   print("Pre-processing done.")
 
-  return X_train, X_valid, y_train, y_valid, smiles_train, smiles_valid
+  return X_train, X_valid, y_train, y_valid, smiles_train, smiles_valid, pca, scaler
 
 class tree_regression():
   '''
@@ -543,3 +557,47 @@ def kmeans(x_train: np.array, x_valid: np.array, number_groups = 10, seed= 42,
   valid_labels = model.predict(x_valid)
 
   return model, train_labels, valid_labels
+
+def predict_with_model(smiles_list: list, model, featurizer = "rdkit", scaler = None, pca = None):
+  '''
+    receive a list of SMILES, a model and a featurizer name, and possibly a scaler and pca model.
+    applies transformations and then makes predictions. 
+    
+    Args: 
+        smiles_list: smiles to predict
+        model: fitted ML model
+        featurizer: the name of the featurizer used
+        scaler (optional): a fitted scaler
+        pca (optional): a fitted pca
+    Returns:
+        predictions
+  '''
+  mols = [Chem.MolFromSmiles(smile) for smile in smiles_list]
+
+  if featurizer == "fingerprints":
+    featurizer=dc.feat.CircularFingerprint(size=1024)
+    featname="CircularFingerprint"
+  elif featurizer == "rdkit":
+    featurizer=dc.feat.RDKitDescriptors()
+    featname="RDKitDescriptors"
+  elif featurizer == "mordred":
+    featurizer=dc.feat.MordredDescriptors()
+    featname="MordredDescriptors"
+  else:
+    raise ValueError("featurizer must be 'fingerprints', 'rdkit', or 'mordred'")
+
+  f = featurizer.featurize(mols)
+  
+  if scaler != None and pca != None:
+    scaled_f = scaler(f)
+    final_f = pca(scaled_f)
+  elif scaler != None and pca == None:
+    final_f = scaler(f)
+  elif scaler == None and pca != None:
+    final_f = pca(f)
+  elif scaler == None and pca == None:
+    final_f = f
+    
+  predictions = model.predict(final_f)
+  
+  return predictions
