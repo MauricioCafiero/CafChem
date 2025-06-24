@@ -16,6 +16,7 @@ from rdkit.Chem import AllChem
 import py3Dmol
 import shutil
 import numpy as np
+from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
 def smiles_to_atoms(smiles: str, charge = 0, spin = 1) -> ase.Atoms:
   '''
