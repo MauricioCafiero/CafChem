@@ -293,6 +293,7 @@ def run_dynamics(filename: str, mol: ase.Atoms, calculator: FAIRChemCalculator,
     MaxwellBoltzmannDistribution(mol, temperature_K=temperature)
     dyn = Langevin(mol, timestep, temperature_K=temperature, friction=friction)
   elif method == "velocity":
+    mol.set_cell([cell_size] * 3)
     dyn = VelocityVerlet(mol,timestep)
 
   dyn.attach(
