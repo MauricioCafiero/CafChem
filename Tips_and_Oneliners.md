@@ -1,7 +1,9 @@
 # Topics Covered:
 [Using a text classifier from HuggingFace](#using-a-text-classifier-from-huggingface) <br>
 [Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
+[Read and write pickle files](#read-and-write-pickle-files) <br>
 [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
+
 
 ## Using a text classifier from HuggingFace
 ```
@@ -55,6 +57,25 @@ Finally, save a new CSV:
 logic50_df.to_csv("logic50_df.csv")
 ```
 
+## Read and write pickle files
+The code below opens a file in binary mode for writing, ansd then 'dumps' the contents into it.
+This may be used for many types of objects:
+- a features array (as shown here)
+- a Machine learning model (scikitlearn models, for example)
+```
+import pickle as pkl
+
+with open(filename+".pkl", "wb") as f:
+    pkl.dump(features, f)  
+print(f"Features saved to {filename}.pkl")
+```
+to load a pickled object:
+```
+with open(filename+".pkl", "rb") as f:
+    features = pkl.load(f)
+print(f"Features saved to {filename}.pkl")
+```
+ 
 ## Getting all of a particular file-type in a directory and making a list
 ```
 import os
