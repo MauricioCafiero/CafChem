@@ -263,8 +263,8 @@ def reaction_thermo(rxn: dict, calculator: FAIRChemCalculator, temp = 310.15, pr
 
 def run_dynamics(filename: str, mol: ase.Atoms, calculator: FAIRChemCalculator,
     method = "velocity",
-    temperature =  298.15, timestep = 0.5 * units.fs, friction = 0.01 / units.fs, 
-    cell_size = 25.0, total_steps = 100, traj_interval = 1, log_interval = 1):
+    temperature =  298.15, timestep = 1.0 * units.fs, friction = 0.01 / units.fs, 
+    cell_size = 25.0, total_steps = 200, traj_interval = 1, log_interval = 1):
   '''
   receives a filename (for saving), an atoms object, a calculator, a method specification 
   (velocity verlet or langevin) and performs a dynamics simulation.
@@ -293,17 +293,16 @@ def run_dynamics(filename: str, mol: ase.Atoms, calculator: FAIRChemCalculator,
     MaxwellBoltzmannDistribution(mol, temperature_K=temperature)
     dyn = Langevin(mol, timestep, temperature_K=temperature, friction=friction)
   elif method == "velocity":
-    mol.set_cell([cell_size] * 3)
     dyn = VelocityVerlet(mol,timestep)
 
   dyn.attach(
       lambda: ase.io.write(output_file, mol, append=True, format = "xyz"), interval=traj_interval
   )
-  dyn.attach(MDLogger(dyn, mol, "md_nvt.log"), interval=log_interval)
+  dyn.attach(MDLogger(dyn, mol, log_file), interval=log_interval)
 
   dyn.run(steps=total_steps)
 
-  df = pd.read_table("md_nvt.log", sep="\s+")
+  df = pd.read_table(log_file, sep="\s+")
   x = df["Etot[eV]"].to_list()
   y = df["Time[ps]"].to_list()
 
