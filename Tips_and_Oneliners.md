@@ -3,6 +3,7 @@
 [Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
 [Read and write pickle files](#read-and-write-pickle-files) <br>
 [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
+[Reload library](#reload-library) <br>
 
 
 ## Using a text classifier from HuggingFace
@@ -85,4 +86,14 @@ files = os.listdir(path)
 filenames = [file for file in files if (os.path.splitext(file)[1]==".csv")]
 
 print(filenames)
+```
+
+## Reload library
+```
+import importlib
+importlib.reload(your_lib)
+```
+If this library was cloned from Github, be sure to remove the old directory first:
+```
+rm -r your_lib
 ```
