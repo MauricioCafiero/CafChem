@@ -97,3 +97,4 @@ If this library was cloned from Github, be sure to remove the old directory firs
 ```
 rm -r your_lib
 ```
+and then re-clone the library before reloading.
