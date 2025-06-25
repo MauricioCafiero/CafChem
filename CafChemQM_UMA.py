@@ -80,6 +80,18 @@ def XYZ_to_atoms(xyz_file: str, charges = None, spins = None) -> ase.Atoms:
 
   return all_mols
 
+def atoms_to_xyz(mol: ase.Atoms, filename: str):
+  '''
+    Receives an atoms object and a filename and writes an XYZ file.
+    
+        Args:
+            mol: atoms object
+            filename: filename for writing
+        Returns:
+            None; writes file
+  '''
+  ase.io.write(filename+".xyz", atoms, format="xyz")
+
 def opt_energy(mol: ase.Atoms, calculator: FAIRChemCalculator, opt_flag = True,
                constraints_flag = False, constraints_list = []):
   '''
