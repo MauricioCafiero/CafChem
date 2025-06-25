@@ -104,10 +104,10 @@ def transformed_lists(test_preds: list, test_dset):
     untrans_ys.append(10 ** test_dset[i].y[0].item())
 
   trans_preds = []
-  for i in range(len(full_preds)):
-    trans_preds.append(np.log10(full_preds[i]).item())
+  for i in range(len(test_preds)):
+    trans_preds.append(np.log10(test_preds[i]).item())
 
-  untrans_preds = full_preds
+  untrans_preds = test_preds
 
   untrans_r2 = r2_score(untrans_ys,untrans_preds)
   trans_r2 = r2_score(trans_ys,trans_preds)
