@@ -6,6 +6,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP](#cafchemredock) <br>
 [Basic machine learning and cleaning ChEMBL CSV files](#cafchembml) <br>
 [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+[Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
 
 The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
 
@@ -32,3 +33,6 @@ also see the list of [commonly used code snippets](https://github.com/MauricioCa
 ## CafChemBoltz
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
+## CafChemEleon
+- finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
+- save and load trained models and analyze data.
