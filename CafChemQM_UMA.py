@@ -284,7 +284,7 @@ def run_dynamics(filename: str, mol: ase.Atoms, calculator: FAIRChemCalculator,
   '''
   output_file = filename + "_md.xyz"
   log_file = filename + "_md_nvt.log"
-
+  mol.get_positions()
   
   mol.calc = calculator
 
