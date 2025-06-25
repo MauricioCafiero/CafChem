@@ -1,3 +1,8 @@
+# Topics Covered:
+[Using a text classifier from HuggingFace](#using-a-text-classifier-from-huggingface) <br>
+[Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
+[Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
+
 ## Using a text classifier from HuggingFace
 ```
 from transformers import pipeline
@@ -20,6 +25,35 @@ This produces:
 >> [{'label': '< 50 nM', 'score': 0.9481903910636902}]
 ```
 For trained  classifiers to use, see, for example: [My HuggingFace page](https://huggingface.co/cafierom)
+
+## Quick reading and writing to CSVs
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv("/content/maob_3865_ic50.csv")
+df.head()
+```
+this produces:
+![image](https://github.com/user-attachments/assets/9e5818a2-4428-4850-9c19-980faaa748ac)
+Convert dataframe columns to lists:
+```
+ic50s = df["IC50"].to_list()
+smiles = df["SMILES"].to_list()
+```
+Make a set of lists into a new dataframe, and save as CSV:
+```
+logIC50s = [np.log10(ic50) for ic50 in ic50s]
+logic50_dict = {"logIC50": logIC50s, "SMILES": smiles}
+logic50_df = pd.DataFrame(logic50_dict)
+logic50_df.head()
+```
+this produces: <br>
+![image](https://github.com/user-attachments/assets/41c15286-501e-49be-976a-b224c743471e) <br>
+Finally, save a new CSV:
+```
+logic50_df.to_csv("logic50_df.csv")
+```
 
 ## Getting all of a particular file-type in a directory and making a list
 ```
