@@ -131,7 +131,7 @@ def values_differences(ys: list, preds: list):
     diff = abs(y-p)
     print(f"y = {y:10.2f}, pred = {p:10.2f}, difference: {diff:>.2f}")
     total_diff += diff
-  total_diff /= len(trans_ys)
+  total_diff /= len(ys)
   print(f"average difference: {total_diff}")
 
 def plot_test(ys: list, preds: list):
