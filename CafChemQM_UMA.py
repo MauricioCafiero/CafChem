@@ -90,7 +90,7 @@ def atoms_to_xyz(mol: ase.Atoms, filename: str):
         Returns:
             None; writes file
   '''
-  ase.io.write(filename+".xyz", atoms, format="xyz")
+  ase.io.write(filename+".xyz", mol, format="xyz")
 
 def opt_energy(mol: ase.Atoms, calculator: FAIRChemCalculator, opt_flag = True,
                constraints_flag = False, constraints_list = []):
