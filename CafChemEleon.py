@@ -100,7 +100,7 @@ def prediction_dataset(smis: list, ys = None):
   mp = nn.BondMessagePassing(**chemeleon_mp['hyper_parameters'])
   mp.load_state_dict(chemeleon_mp['state_dict'])
 
-  if ys == None:
+  if ys.any() == None:
     ys = np.zeros((len(smis),1))
     
   chemprop_dir = Path.cwd().parent
