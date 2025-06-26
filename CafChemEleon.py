@@ -107,10 +107,8 @@ def prediction_dataset(smis: list):
   
   indicies = [i for i in range(len(smis))]
   pred_data = data.split_data_by_indices(all_data, [indicies])
-  pred_dset = data.MoleculeDataset(pred_data[0], featurizer)
-  
+  pred_dset = data.MoleculeDataset(pred_data, featurizer)
   scaler = train_dset.normalize_targets()
- 
   pred_loader = data.build_dataloader(pred_dset, num_workers=num_workers)
   
   return pred_loader, pred_dset
