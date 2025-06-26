@@ -25,6 +25,15 @@ HMGCR_data = {
         "size": 331
         }
 
+global DRD2_data
+DRD2_data = {
+        "file_location":"CafChem/DRD2_dude_QM_site.xyz",
+        "charge": -1,
+        "spin": 1,
+        "constraints": [1, 10, 18, 27, 33, 42, 54, 62, 78, 89, 101, 110],
+        "size": 331
+        }
+
 global MAOB_data
 MAOB_data = {
         "file_location":"CafChem/MAOB_dude_QM_site.xyz",
