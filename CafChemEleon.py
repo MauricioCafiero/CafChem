@@ -82,13 +82,14 @@ def make_model(smis: list, ys: np.array, splits_tuple: tuple):
   
   return mpnn, train_loader, val_loader, test_loader, train_dset, val_dset, test_dset
 
-def prediction_dataset(smis: list):
+def prediction_dataset(smis: list, ys = None):
   '''
     defines the model to use for finetuning; creates three datasets: training, 
     validation, and testing, and their associated dataloaders.
 
     Args:
       smis (list): A list of SMILES strings.
+      ys (list): target values (optional)
     Returns:
       pred_loader: the predicting dataloader
       pred_dset: the predicting dataset
@@ -99,7 +100,9 @@ def prediction_dataset(smis: list):
   mp = nn.BondMessagePassing(**chemeleon_mp['hyper_parameters'])
   mp.load_state_dict(chemeleon_mp['state_dict'])
 
-  ys = [0.0]*len(smis)
+  if ys == None;
+    ys = np.zeros((len(smis),1))
+    
   chemprop_dir = Path.cwd().parent
   num_workers = 0 # number of workers for dataloader. 0 means using main process for data loading
   all_data = [data.MoleculeDatapoint.from_smi(smi, y) for smi, y in zip(smis, ys)]
@@ -107,8 +110,8 @@ def prediction_dataset(smis: list):
   
   indicies = [i for i in range(len(smis))]
   pred_data = data.split_data_by_indices(all_data, [indicies])
-  pred_dset = data.MoleculeDataset(pred_data, featurizer)
-  scaler = train_dset.normalize_targets()
+  pred_dset = data.MoleculeDataset(all_data, featurizer)
+ 
   pred_loader = data.build_dataloader(pred_dset, num_workers=num_workers)
   
   return pred_loader, pred_dset
