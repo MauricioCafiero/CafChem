@@ -115,6 +115,30 @@ def transformed_lists(test_preds: list, test_dset):
 
   return trans_ys, untrans_ys, trans_preds, untrans_preds
 
+def lists(test_preds: list, test_dset):
+  '''
+    Produces two lists: original y values and predicted y values;
+    Calculates the R2 score.
+
+      Args:
+        test_preds (list): A list of predicted values.
+        test_dset: The test dataset.
+
+      Returns:
+        untrans_ys: A list of untransformed y values.
+        untrans_preds: A list of untransformed predicted values.
+  '''
+  untrans_ys = []
+  for i in range(len(test_dset)):
+    untrans_ys.append(test_dset[i].y[0].item())
+
+  untrans_preds = test_preds
+
+  untrans_r2 = r2_score(untrans_ys,untrans_preds)
+  print(f"regular scale R2 = {untrans_r2:.2f},")
+
+  return untrans_ys, untrans_preds
+
 def values_differences(ys: list, preds: list):
   '''
   prints the ground truth and predicted values, as well as the difference between them.
