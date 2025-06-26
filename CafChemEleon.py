@@ -104,7 +104,7 @@ def prediction_dataset(smis: list):
   num_workers = 0 # number of workers for dataloader. 0 means using main process for data loading
   all_data = [data.MoleculeDatapoint.from_smi(smi, y) for smi, y in zip(smis, ys)]
   mols = [d.mol for d in all_data]  # RDkit Mol objects are use for structure based splits
-  pred_indices, val_indices, test_indices = data.make_split_indices(mols, "random", (1.0, 0.0, 0.0)  # unpack the tuple into three separate lists
+  pred_indices, val_indices, test_indices = data.make_split_indices(mols, "random", (1.0, 0.0, 0.0))  # unpack the tuple into three separate lists
   pred_data, val_data, test_data = data.split_data_by_indices(
       all_data, train_indices, val_indices, test_indices
   )
