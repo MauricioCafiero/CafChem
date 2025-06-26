@@ -106,7 +106,7 @@ def prediction_dataset(smis: list):
   mols = [d.mol for d in all_data]  # RDkit Mol objects are use for structure based splits
   
   indicies = [i for i in range(len(smis))]
-  pred_data = data.split_data_by_indices(all_data, indicies)
+  pred_data = data.split_data_by_indices(all_data, [indicies])
   pred_dset = data.MoleculeDataset(pred_data[0], featurizer)
   
   scaler = train_dset.normalize_targets()
