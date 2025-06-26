@@ -82,6 +82,40 @@ def make_model(smis: list, ys: np.array, splits_tuple: tuple):
   
   return mpnn, train_loader, val_loader, test_loader, train_dset, val_dset, test_dset
 
+def prediction_dataset(smis: list):
+  '''
+    defines the model to use for finetuning; creates three datasets: training, 
+    validation, and testing, and their associated dataloaders.
+
+    Args:
+      smis (list): A list of SMILES strings.
+    Returns:
+      pred_loader: the predicting dataloader
+      pred_dset: the predicting dataset
+  '''
+  featurizer = featurizers.SimpleMoleculeMolGraphFeaturizer()
+  agg = nn.MeanAggregation()
+  chemeleon_mp = torch.load("chemeleon_mp.pt", weights_only=True)
+  mp = nn.BondMessagePassing(**chemeleon_mp['hyper_parameters'])
+  mp.load_state_dict(chemeleon_mp['state_dict'])
+
+  ys = [0.0]*len(smis)
+  chemprop_dir = Path.cwd().parent
+  num_workers = 0 # number of workers for dataloader. 0 means using main process for data loading
+  all_data = [data.MoleculeDatapoint.from_smi(smi, y) for smi, y in zip(smis, ys)]
+  mols = [d.mol for d in all_data]  # RDkit Mol objects are use for structure based splits
+  pred_indices, val_indices, test_indices = data.make_split_indices(mols, "random", (1.0, 0.0, 0.0)  # unpack the tuple into three separate lists
+  pred_data, val_data, test_data = data.split_data_by_indices(
+      all_data, train_indices, val_indices, test_indices
+  )
+  pred_dset = data.MoleculeDataset(pred_data[0], featurizer)
+
+  scaler = train_dset.normalize_targets()
+ 
+  pred_loader = data.build_dataloader(pred_dset, num_workers=num_workers)
+  
+  return pred_loader, pred_dset
+
 def transformed_lists(test_preds: list, test_dset):
   '''
     Produces four lists: original y values and predicted y values, each
