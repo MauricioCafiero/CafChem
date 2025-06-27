@@ -1,9 +1,10 @@
 # Topics Covered:
-[Using a text classifier from HuggingFace](#using-a-text-classifier-from-huggingface) <br>
-[Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
-[Read and write pickle files](#read-and-write-pickle-files) <br>
-[Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
-[Reload library](#reload-library) <br>
+- [Using a text classifier from HuggingFace](#using-a-text-classifier-from-huggingface) <br>
+- [Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
+- [Read and write pickle files](#read-and-write-pickle-files) <br>
+- [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
+- [Reload library](#reload-library) <br>
+- [Pandas frequently used methods](#general-pandas-tips) <br>
 
 
 ## Using a text classifier from HuggingFace
@@ -98,3 +99,36 @@ If this library was cloned from Github, be sure to remove the old directory firs
 rm -r your_lib
 ```
 and then re-clone the library before reloading.
+
+## General Pandas tips
+Assuming that pandas is imported!
+
+Create a new dataframe (df_2) as a subset of another dataframe (df_1) which has the columns: "Smiles","IC50","Column 2","Column 3", "Column 4"...:
+```
+df_2 = df_1[["Smiles","IC50","Column 2"]]
+```
+Filter a dataframe (df_2) for specific values in a specific column and create a new dataframe (df_3):
+```
+df_3 = df_2[df_2["IC50"] < 100]
+```
+Drop a column from a dataframe:
+```
+df_3.drop(["Column 2"],axis=1,inplace=True)
+```
+Rename columns:
+```
+df_3 = df_3.rename(columns={"Smiles":"SMILES","IC50":"IC50 (nM)"})
+```
+Apply a function to every row in a column (assuming you have a function defined called *smiles_to_canon* and it takes the values in the givn row as arguments):
+```
+df_3["SMILES"] = df_3["SMILES"].apply(smiles_to_canon)
+```
+Drop duplicates from a dataframe based on a specific column: 
+```
+df_3 = df_3.drop_duplicates(subset=["SMILES"])
+```
+Sort a dataframe by a specific row:
+```
+df_3.sort_values(by=["IC50 (nM)"],inplace=True)
+```
+
