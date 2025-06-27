@@ -131,4 +131,20 @@ Sort a dataframe by a specific row:
 ```
 df_3.sort_values(by=["IC50 (nM)"],inplace=True)
 ```
+Get descriptive statistics for all columns in a dataframe:
+```
+df_3.describe()
+```
+Get statistics for only rows 5 and beyond:
+```
+df_3.iloc[5:].describe()
+```
+Get statistics for an individual column:
+```
+df_3["IC50 (nM)"].max()
+df_3["IC50 (nM)"].min()
+df_3["IC50 (nM)"].mean()
+df_3["IC50 (nM)"].sum()
+df_3["IC50 (nM)"].count()
+```
 
