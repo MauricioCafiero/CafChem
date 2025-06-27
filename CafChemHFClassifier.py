@@ -1,5 +1,4 @@
 import torch
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import pandas as pd
 import huggingface_hub
@@ -154,15 +153,35 @@ class classify():
 
 class evaluate():
   '''
+    evaluates the testing set with a confusion matrix.
+  
   '''
   def __init__(self, trainer, labels: list, encoded_dataset):
     '''
+        Constructor
+            Args:
+                trainer: trained model.
+                labels: a list of labels for use with the analysis. Should be identical to what
+                        is used in training
+                encoded_dataset: the encoded dataset for analysis.
+            returns:
+                None
     '''
     self.trainer = trainer
     self.labels = labels
     self.encoded_dataset = encoded_dataset
  
   def plot_confusion_matrix(self, y_preds, y_true, labels):
+    '''
+        actually plots the confusion matirx.
+        
+        Args:
+            y_preds: predicted values
+            y_true: ground truth
+            labels: class labels
+        returns:
+                None; plots confusion matrix.
+    '''
     cm = confusion_matrix(y_true, y_preds, normalize="true")
     fig, ax = plt.subplots(figsize=(6, 6))
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
@@ -172,6 +191,7 @@ class evaluate():
 
   def confusion(self):
     '''
+        uses the trainer to make predictions on the dataset and plots the confusion matrix
     '''
     preds_output = self.trainer.predict(self.encoded_dataset["test"])
     y_preds = np.argmax(preds_output.predictions, axis=1)
