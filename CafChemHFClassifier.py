@@ -173,7 +173,7 @@ class evaluate():
   def confusion(self):
     '''
     '''
-    preds_output = trainer.predict(self.encoded_dataset["test"])
+    preds_output = self.trainer.predict(self.encoded_dataset["test"])
     y_preds = np.argmax(preds_output.predictions, axis=1)
     y_true = np.array(self.encoded_dataset["test"]["label"])
     self.plot_confusion_matrix(y_preds, y_true, labels=self.labels)
