@@ -5,6 +5,7 @@
 - [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
 - [Reload library](#reload-library) <br>
 - [Pandas frequently used methods](#general-pandas-tips) <br>
+- [Making and saving a Matplotlib plot](#save-matplotLib-image) <br>
 
 
 ## Using a text classifier from HuggingFace
@@ -100,6 +101,19 @@ rm -r your_lib
 ```
 and then re-clone the library before reloading.
 
+## Save an image file from RDKit
+*mols* should be a list of mol objects, and *legends* is a list of legends for the images (optional):
+```
+from rdkit.Chem import Draw
+
+img = Draw.MolsToGridImage(mols, legends = legends, molsPerRow=3, subImgSize=(200,200))
+pic = img.data
+
+filename = "my_pic"
+with open(filename+".png",'wb+') as outf:
+    outf.write(pic)
+```
+
 ## General Pandas tips
 Assuming that pandas is imported!
 
@@ -125,7 +139,7 @@ df_3["SMILES"] = df_3["SMILES"].apply(smiles_to_canon)
 ```
 Drop duplicates from a dataframe based on a specific column: 
 ```
-df_3 = df_3.drop_duplicates(subset=["SMILES"])
+df_3 = df_3.drop_duplicates(subset=["SMILES"], keep= "last")
 ```
 Sort a dataframe by a specific row:
 ```
@@ -147,4 +161,31 @@ df_3["IC50 (nM)"].mean()
 df_3["IC50 (nM)"].sum()
 df_3["IC50 (nM)"].count()
 ```
+## Save MatPlotLib image
+Making a plot with MatPlotLib and saving the image
+```
+import matplotlib as plt
 
+x = [i for i in range(100)]
+y = [i**2 for i in range(100)]
+max_y = max(y)
+     
+fig = plt.figure(figsize=(10,4)) #set figure size
+ax = fig.add_subplot(111) # place the image in the figure
+
+#below: x and y starting position of the text, the text, and the fontsize
+plt.text(35,max_y*0.9, "square function", fontsize = 20) 
+plt.xlabel("x")
+plt.ylabel("x^2")
+plt.title(f"A plot of the quadratic function.")
+plt.ylim(0, max_y*1.1) # how high should the y-axis go?
+
+plt.plot(x,y, color = "red")
+
+plt.savefig("myfig.png")
+plt.show
+```
+Produces the image below and saved the file!
+![image](https://github.com/user-attachments/assets/465848f0-79b5-426d-87b0-4c2c5b77f691)
+
+```
