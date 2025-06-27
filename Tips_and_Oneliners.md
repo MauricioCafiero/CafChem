@@ -4,8 +4,9 @@
 - [Read and write pickle files](#read-and-write-pickle-files) <br>
 - [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
 - [Reload library](#reload-library) <br>
+- [Save RDKit image](#save-an-image-file-from-rdkit) <br>
 - [Pandas frequently used methods](#general-pandas-tips) <br>
-- [Making and saving a Matplotlib plot](#save-matplotLib-image) <br>
+- [Making and saving a Matplotlib plot](#save-matplotlib-image) <br>
 
 
 ## Using a text classifier from HuggingFace
