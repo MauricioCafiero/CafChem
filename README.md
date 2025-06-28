@@ -8,6 +8,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
+- Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
 
 The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
 
