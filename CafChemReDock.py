@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import deepchem as dc
 import time
+import random
 from rdkit import Chem
 import matplotlib.pyplot as plt
 from rdkit.Chem import AllChem, Draw
@@ -387,3 +388,372 @@ def complexG16(in_file: str, target_obj: dict, charge: int, spin: int):
     g.write(line)
   g.write("\n")
   g.close()
+
+class solvation():
+  '''
+  Class to hold all functions related to adding waters to a molecule
+  '''
+  def __init__(self, filename: str, how_many_water_radii: int):
+    '''
+    Add randomly placed waters to a molecule
+
+      Args:
+        filename: XYZ file of molecule
+        how_many_water_radii: number of water radii around the molecules for the
+                              box dimensions
+    '''
+    self.filename = filename
+    self.how_many_water_radii = how_many_water_radii
+    self.water_vdw_rad = 1.7
+    print("add_waters class initialized")
+  
+  def add_box(self, val):
+    new_val = val + self.how_many_water_radii*self.water_vdw_rad
+    return new_val
+    
+  def sub_box(self, val):
+    new_val = val - self.how_many_water_radii*self.water_vdw_rad
+    return new_val
+  
+  def calc_distance(self,water: list, atom: list):
+    '''
+    Calculate the distance between the O in the newly added water and an atom
+    in the molecule.
+
+      Args:
+        water: list of XYZ coordinates for the O atom in water
+        atom: list of XYZ coordinates for an atom in the molecule
+      Returns:
+        distance: distance between the two atoms
+    '''
+    distance = 0.0
+    for i in range(3):
+        distance += (float(water[i])-float(atom[i]))**2
+    distance = np.sqrt(distance)
+    return distance
+
+  def get_box_size(self):
+    '''
+      Get the box size for the molecule by finding the maximum dimensions and then
+      adding a specified number of water van der Waals radii.
+
+        Args:
+          None
+        Returns:
+          max_values: list of maximum XYZ dimensions
+          min_values: list of minimum XYZ dimensions
+    '''
+    f = open(self.filename,"r")
+    lines = f.readlines()
+    f.close()
+  
+    max_values = np.zeros((3))
+    min_values = np.zeros((3))
+    x_list = []
+    y_list = []
+    z_list = []
+    for row in lines[2:]:
+        parts = row.split()
+        x_list.append(parts[1]) 
+        y_list.append(parts[2])
+        z_list.append(parts[3]) 
+    max_values[0] = max(x_list)
+    max_values[1] = max(y_list)
+    max_values[2] = max(z_list)
+    min_values[0] = min(x_list)
+    min_values[1] = min(y_list)
+    min_values[2] = min(z_list)
+    
+    max_values = [self.add_box(val) for val in max_values]
+    min_values = [self.sub_box(val) for val in min_values]
+
+    dims = ["x","y","z"]
+    print(f"Maximum dimensions after augmentation are:")
+    for dim,maxes,mins in zip(dims,max_values,min_values):
+        print(f"{dim} - Max: {maxes}, Min: {mins}")
+    
+    volume = 1.0
+    for big,small in zip(max_values,min_values):
+        volume *= (big - small)
+    print(f"Volume is {volume} A^3")
+    
+    return max_values, min_values
+  
+  def get_water_coordinates(self,o_coordinates: list):
+    '''
+    Takes coordinates for an oxygen atom, adds two H-atoms, translates the molecule
+    to the new location and adds a random rotation.
+
+      Args:
+        o_coordinates: oxygen atom coordinates
+      Returns:
+        rot_water_xyz: string of coordinates for the water molecule
+        rot_water_coordinates: list of coordinates for the water molecule
+    '''
+    o_xyz = np.asarray([0.0, 0.0, 0.0]).reshape(3,1)
+    h1_xyz = np.asarray([0.580743,  0.000000,  0.758810]).reshape(3,1)
+    h2_xyz = np.asarray([0.580743,  0.000000,  -0.758810]).reshape(3,1)
+
+    theta_x = random.uniform(0,2*np.pi)
+    theta_y = random.uniform(0,2*np.pi)
+    theta_z = random.uniform(0,2*np.pi)
+    
+    x_rotation_matrix = np.asarray(([1.0,0.0,0.0],[0.0,np.cos(theta_x),-np.sin(theta_x)],[0.0,np.sin(theta_x),np.cos(theta_x)])).reshape(3,3)
+    y_rotation_matrix = np.asarray(([np.cos(theta_y),0.0,-np.sin(theta_y)],[0.0,1.0,0.0],[np.sin(theta_y),0.0,np.cos(theta_y)])).reshape(3,3)
+    z_rotation_matrix = np.asarray(([np.cos(theta_z),-np.sin(theta_z),0.0],[np.sin(theta_z),np.cos(theta_z),0.0],[0.0,0.0,1.0])).reshape(3,3)
+    
+    rot_h1_xyz = np.matmul(x_rotation_matrix,h1_xyz)
+    rot_h1_xyz = np.matmul(y_rotation_matrix,rot_h1_xyz)
+    rot_h1_xyz = np.matmul(z_rotation_matrix,rot_h1_xyz)
+    rot_h2_xyz = np.matmul(x_rotation_matrix,h2_xyz)
+    rot_h2_xyz = np.matmul(y_rotation_matrix,rot_h2_xyz)
+    rot_h2_xyz = np.matmul(z_rotation_matrix,rot_h2_xyz)
+        
+    for i in range(3):
+        o_xyz[i] = o_xyz[i] + o_coordinates[i]
+        rot_h1_xyz[i] = rot_h1_xyz[i] + o_coordinates[i]
+        rot_h2_xyz[i] = rot_h2_xyz[i] + o_coordinates[i]
+    
+    rot_water_xyz =  f"O {o_xyz[0].item()}   {o_xyz[1].item()}    {o_xyz[2].item()}\n"
+    rot_water_xyz += f"H {rot_h1_xyz[0].item()}   {rot_h1_xyz[1].item()}    {rot_h1_xyz[2].item()}\n"
+    rot_water_xyz += f"H {rot_h2_xyz[0].item()}   {rot_h2_xyz[1].item()}    {rot_h2_xyz[2].item()}\n"
+
+    rot_water_coordinates = []
+    rot_water_coordinates.append([o_xyz[0], o_xyz[1], o_xyz[2]])
+    rot_water_coordinates.append([rot_h1_xyz[0], rot_h1_xyz[1], rot_h1_xyz[2]])
+    rot_water_coordinates.append([rot_h2_xyz[0], rot_h2_xyz[1], rot_h2_xyz[2]])
+
+    return rot_water_xyz, rot_water_coordinates
+
+  def add_waters(self, max_waters: int, stopping_criteria = 10):
+    '''
+    Adds water molecules up to max waters. Tries randomly adding waters and fails 
+    if it is too close to an existing atom. 
+
+      Args:
+        max_waters: maximum waters to add
+        stopping_criteria: number of failed attempts before stopping
+      Returns:
+        molecule_text: string of coordinates for the molecule with waters
+    '''
+    f = open(self.filename,"r")
+    lines = f.readlines()
+    f.seek(0)
+    molecule_text = f.read()
+    f.close()
+  
+    max_values, min_values = self.get_box_size()
+
+    waters_to_add = []
+    add_water = True
+
+    water_counter = 0
+    fail_counter = []
+    
+    for _ in range(max_waters):
+        add_water = True
+
+        if len(fail_counter) >= stopping_criteria:
+            if 0 not in fail_counter[-stopping_criteria:]:
+                print("Stopping criteria met! Exiting water addition")
+                break
+        
+        new_water = []
+        for i in range(3):
+            new_water.append(random.uniform(min_values[i],max_values[i]))
+           
+        for row in lines[2:]:
+            parts = row.split()
+            mol_vec = [parts[1],parts[2],parts[3]]
+            distance = self.calc_distance(new_water, mol_vec)
+            if distance < self.water_vdw_rad:
+                #print(f"distance: {distance} is close to another atom, breaking loop")
+                fail_counter.append(1)
+                add_water = False
+                break
+                
+        if len(waters_to_add) > 0:
+          for water in waters_to_add:
+            for row in water:
+                distance = self.calc_distance(new_water,row)
+                if distance < self.water_vdw_rad:
+                    #print(f"distance: {distance} is close to another water, breaking loop")
+                    fail_counter.append(1)
+                    add_water = False
+                    break
+                
+        if add_water:
+            water_counter += 1
+            fail_counter.append(0)
+            new_water_string, new_water_coordinates = self.get_water_coordinates(new_water)
+            molecule_text += new_water_string
+            waters_to_add.append(new_water_coordinates)
+
+    old_length = int(lines[0])
+    new_length = old_length + 3*water_counter
+    molecule_text = f"{new_length}" + molecule_text[2:]
+
+    print(f"Added {water_counter}/{max_waters} waters.")
+    print("==================================================")
+    return molecule_text
+
+def smiles_to_atoms(smiles: str, charge = 0, spin = 1): # -> ase.Atoms:
+  '''
+  receives a smiles string and returns an ASE atoms object. Adds Hs to
+  molecule, optimizes with MMFF by RDKit. Makes and XYZ string, 
+  and an ASE atoms object.
+
+    Args:
+      smiles: SMILES string for molecule
+      charge: charge of molecule
+      spin: spin multiplicity of molecule
+
+    Returns:
+      atoms: ASE atoms object
+  '''
+  xyz_list = []
+  atoms_list = ""
+  mol = Chem.MolFromSmiles(smiles)
+  molH = Chem.AddHs(mol)
+  AllChem.EmbedMolecule(molH)
+  AllChem.MMFFOptimizeMolecule(molH)
+  xyz_string = f"{molH.GetNumAtoms()}\n\n"
+  for atom in molH.GetAtoms():
+    atoms_list += atom.GetSymbol()
+    pos = molH.GetConformer().GetAtomPosition(atom.GetIdx())
+    temp_tuple = (pos[0], pos[1], pos[2])
+    xyz_list.append(temp_tuple)
+    xyz_string += f"{atom.GetSymbol()} {pos[0]} {pos[1]} {pos[2]}\n"
+
+  atoms = Atoms(atoms_list,xyz_list)  
+  atoms.info['charge'] = charge
+  atoms.info['spin'] = spin
+
+  return atoms  
+
+def XYZ_to_atoms(xyz_file: str, charges = None, spins = None) -> ase.Atoms:
+  '''
+  receives an XYZ file with one or more molecules and returns a list of ASE atoms objects.
+  Updates charge and spin info for each molecule.
+
+    Args:
+      xyz_file: XYZ file with one or more molecules
+      charges: list of charges for each molecule
+      spins: list of spin multiplicities for each molecule
+
+    Returns:
+      all_mols: list of ASE atoms objects
+  '''
+  all_mols = []
+  for mol in ase.io.iread(xyz_file, format="xyz"):
+    all_mols.append(mol)
+
+  if charges == None:
+    charges = [0] * len(all_mols)
+  if spins == None:
+    spins = [1] * len(all_mols)
+  
+  for mol, charge, spin in zip(all_mols, charges, spins):
+    mol.info['charge'] = charge
+    mol.info['spin'] = spin
+
+  return all_mols
+
+def opt_energy(mol: ase.Atoms, calculator: FAIRChemCalculator, opt_flag = True,
+               constraints_flag = False, constraints_list = []):
+  '''
+  Receives an ASE atoms object and calculates the energy using the UMA MLIP.
+  if prompted, optimizes the structure and returns the optimized energy.
+
+    Args:
+      mol: ASE atoms object
+      calculator: FAIRChemCalculator object
+      opt_flag: boolean indicating whether to optimize the structure
+    Returns:
+      energy: energy of molecule in Hartree
+  '''
+  mol.calc = calculator
+  initial_energy = mol.get_potential_energy()
+  print(f"Initial energy: {0.0367493*initial_energy:.6f} ha")
+  if opt_flag:
+
+    if constraints_flag == True and len(constraints_list) != 0:
+      c = FixAtoms(indices = constraints_list)
+      mol.set_constraint(c)
+
+    opt = BFGS(mol)
+    opt.run(fmax=0.10)
+    energy = mol.get_potential_energy()
+    print(f"Final energy: {0.0367493*energy:.6f} ha")
+    print(f"Energy difference: {0.0367493*(energy-initial_energy):.6f} ha")
+    return 0.0367493*energy
+
+  return 0.0367493*initial_energy
+
+def atoms_to_xyz(mol: ase.Atoms, filename: str):
+  '''
+    Receives an atoms object and a filename and writes an XYZ file.
+    
+        Args:
+            mol: atoms object
+            filename: filename for writing
+        Returns:
+            None; writes file
+  '''
+  ase.io.write(filename+".xyz", mol, format="xyz")
+
+def sdf_to_xyz(sdf_file: str, xyz_file = None):
+  '''
+    Takes and sdf file and produces an xyz file.
+
+      Args:
+        sdf_file: file to process
+        xyz_file (optional): name for xyz file
+  '''
+  suppl = Chem.SDMolSupplier(sdf_file)
+
+  total_xyz_list = []
+  for mol in suppl:
+    '''
+    In most cases this loop will only be over one molecule.
+    adds protons to the structure and then makes and XYZ string, 
+    and an ASE atoms object.
+    '''
+    xyz_list = []
+    atoms_list = ""
+    template = mol
+    molH = Chem.AddHs(mol)
+    AllChem.ConstrainedEmbed(molH,template, useTethers=True)
+    xyz_string = f"{molH.GetNumAtoms()}\n\n"
+    for atom in molH.GetAtoms():
+      atoms_list += atom.GetSymbol()
+      pos = molH.GetConformer().GetAtomPosition(atom.GetIdx())
+      xyz_string += f"{atom.GetSymbol()} {pos[0]} {pos[1]} {pos[2]}\n"
+    total_xyz_list.append(xyz_string)
+
+    if xyz_file == None:
+      xyz_file = sdf_file.replace(".sdf",".xyz").replace(".SDF",".xyz")
+    
+    f = open(xyz_file,"w")
+    f.write(xyz_string)
+    f.close()
+
+  return total_xyz_list
+
+def xyz_to_sdf(xyz_file: str, sdf_file = None):
+  '''
+    Takes and xyz file and produces an sdf file.
+
+      Args:
+        xyz_file: file to process
+        sdf_file (optional): name for sdf file
+      Returns:
+        None; writes file
+  '''
+  if sdf_file == None:
+    sdf_file = xyz_file.replace(".xyz",".sdf").replace(".XYZ",".sdf")
+
+  mol = Chem.MolFromXYZFile(xyz_file)
+  writer = Chem.SDWriter(sdf_file)
+  writer.write(mol)
+  writer.close()
