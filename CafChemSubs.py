@@ -10,6 +10,8 @@ import deepchem as dc
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import Draw
+from rdkit import DataStructs
+from rdkit.Chem.Fingerprints import FingerprintMols
 import py3Dmol
 
 sub_locations_re = ["cc",                          #first unsubstituted carbons encountered
@@ -104,6 +106,8 @@ def sub_rings(smile_in: str, number_subs: int) -> str:
     
     Returns:
       new_smiles: a list of all the generated molecules.
+      qeds: a list of the QED value for each molecule
+      mols: a list of the mol objects for each molecule.
       new_legends: a list of the substitution made for each molecule.
       img: an image of the molecules with legends.
   '''
@@ -144,6 +148,12 @@ def sub_rings(smile_in: str, number_subs: int) -> str:
   return new_smiles, qeds, mols, new_legends, img
   
 def genmask_model_setup(model_size: int, model_name: str):
+  '''
+    Accepts a model name and loads the tokenizer and a pipeline for the model
+    Args:
+        model_size: deprecated, will be removed, can use any integer
+        model_name: the name of the HF model, in the form user/model
+  '''
   global device
   global tokenizer
   global mask_filler
@@ -412,3 +422,46 @@ def visualize_molecule(xyz_string: str):
   viewer.setStyle({"stick": {}, "sphere": {"radius": 0.5}})
   viewer.zoomTo()
   viewer.show()
+
+def calculate_similarities(known: str, to_compare: list):
+    '''
+    calculates the Tanimoto similarity between a known and a list of molecules
+    using circular fingerprints.
+
+        Args:
+            known: SMILES for the known
+            to_compare: list of SMILES to compare
+        Returns:
+            sim_array: an array of similarity values between the molecules in the list
+            known_sim: a list of similarities between the list and the known
+    '''
+    mm_cutoff = 0.4
+    
+    mols = [Chem.MolFromSmiles(smile) for smile in to_compare]
+    fp = [AllChem.GetMorganFingerprint(m,2) for m in mols]
+    
+    known_mol = Chem.MolFromSmiles(known)
+    known_fp = AllChem.GetMorganFingerprint(known_mol,2)
+    
+    sim_dim = len(to_compare)
+    sim_array = np.zeros((sim_dim,sim_dim))
+
+    for i,loop_fp in enumerate(fp):
+        sim_array[i][i+1:] = DataStructs.BulkTanimotoSimilarity(loop_fp,fp[i+1:]) 
+        
+    for i in range(sim_dim):
+        for j in range(i,sim_dim,1):
+            if sim_array[i][j] > mm_cutoff:
+                print(f"Molecules {i} and {j} have a similarity of {sim_array[i][j]:.2f}.")
+    
+    print("========================================================")
+    
+    known_sim = []
+    for i,loop_fp in enumerate(fp):
+        known_sim.append(DataStructs.BulkTanimotoSimilarity(loop_fp,known_fp))
+
+    for i in range(sim_dim):
+        if known_sim[i] > mm_cutoff:
+            print(f"Molecule {i} and the known have a similarity of {known_sim[i]:.2f}.")
+    
+    return sim_array, known_sim
