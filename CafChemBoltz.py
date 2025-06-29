@@ -90,7 +90,7 @@ def make_boltz_files(smiles_list: list, sequence: str, prot_name: str, names = N
 
   for smile,name in zip(smiles_list,names):
 
-    f = open("CafChem/boltz_template.yaml", "r")
+    f = open("CafChem/data/boltz_template.yaml", "r")
     template = f.readlines()
     f.close()
     out_name = name + ".yaml"

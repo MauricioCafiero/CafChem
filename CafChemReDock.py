@@ -19,7 +19,7 @@ from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
 global HMGCR_data
 HMGCR_data = {
-        "file_location":"CafChem/HMGCR_dude_QM_site.xyz",
+        "file_location":"CafChem/data/HMGCR_dude_QM_site.xyz",
         "charge": 3,
         "spin": 1,
         "constraints": [1, 11, 16, 24, 33, 41, 54, 60, 72, 83, 92, 98, 107, 124, 132, 140, 148, 159, 168, 181],
@@ -28,7 +28,7 @@ HMGCR_data = {
 
 global DRD2_data
 DRD2_data = {
-        "file_location":"CafChem/DRD2_dude_QM_site.xyz",
+        "file_location":"CafChem/data/DRD2_dude_QM_site.xyz",
         "charge": -1,
         "spin": 1,
         "constraints": [1, 10, 18, 27, 33, 42, 54, 62, 78, 89, 101, 110],
@@ -37,7 +37,7 @@ DRD2_data = {
 
 global MAOB_data
 MAOB_data = {
-        "file_location":"CafChem/MAOB_dude_QM_site.xyz",
+        "file_location":"CafChem/data/MAOB_dude_QM_site.xyz",
         "charge": -1,
         "spin": 1,
         "constraints": [1, 7, 12, 17, 22, 31, 39, 44, 51, 61, 67, 84, 89, 94, 111, 120, 129, 134, 139, 147, 161, 172, 180, 188, 197, 206, 218, 235, 242, 250, 256, 265, 272, 281, 295, 306, 322, 335, 342, 356, 361, 370, 375, 389, 398, 408],
@@ -46,7 +46,7 @@ MAOB_data = {
 
 global MAOBnoFAD_data
 MAOBnoFAD_data = {
-        "file_location":"CafChem/MAOBnoFAD_dude_QM_site.xyz",
+        "file_location":"CafChem/data/MAOBnoFAD_dude_QM_site.xyz",
         "charge": 1,
         "spin": 1,
         "constraints": [1, 7, 12, 17, 22, 31, 39, 44, 51, 61, 67, 84, 89, 94, 111, 120, 129, 134, 139, 147, 161, 172, 180, 188, 197, 206, 218, 235, 242, 250, 256, 265, 272, 281, 295, 306, 322, 335, 341, 355, 360, 369, 374, 388, 397, 407],
