@@ -423,7 +423,7 @@ def visualize_molecule(xyz_string: str):
   viewer.zoomTo()
   viewer.show()
 
-def calculate_similarities(known: str, to_compare: list):
+def calculate_similarities(known: str, to_compare: list, mm_cutoff: float):
     '''
     calculates the Tanimoto similarity between a known and a list of molecules
     using circular fingerprints.
@@ -435,7 +435,6 @@ def calculate_similarities(known: str, to_compare: list):
             sim_array: an array of similarity values between the molecules in the list
             known_sim: a list of similarities between the list and the known
     '''
-    mm_cutoff = 0.4
     
     mols = [Chem.MolFromSmiles(smile) for smile in to_compare]
     fp = [AllChem.GetMorganFingerprint(m,2) for m in mols]
@@ -456,12 +455,10 @@ def calculate_similarities(known: str, to_compare: list):
     
     print("========================================================")
     
-    known_sim = []
-    for i,loop_fp in enumerate(fp):
-        known_sim.append(DataStructs.BulkTanimotoSimilarity(loop_fp,known_fp))
-
+    known_array = np.zeros((1,sim_dim))
+    known_array[0,:] = DataStructs.BulkTanimotoSimilarity(known_fp,fp)
     for i in range(sim_dim):
-        if known_sim[i] > mm_cutoff:
-            print(f"Molecule {i} and the known have a similarity of {known_sim[i]:.2f}.")
-    
-    return sim_array, known_sim
+        if known_array[0,i] > mm_cutoff:
+            print(f"Molecule {i} and the known have a similarity of {known_array[0,i]:.2f}.")
+
+    return sim_array, known_array
