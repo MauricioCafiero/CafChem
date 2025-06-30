@@ -274,10 +274,12 @@ def validate_smiles(in_smiles, in_entropy):
     if smile not in unique_smiles:
       unique_smiles.append(smile)
       unique_entropies.append(entropy)
-
-  print(f"Total unique SMILES generated: {len(unique_smiles)}")
-  print(f"Average entropy: {sum(unique_entropies)/len(unique_entropies)}")
-
+  try:
+    print(f"Total unique SMILES generated: {len(unique_smiles)}")
+    print(f"Average entropy: {sum(unique_entropies)/len(unique_entropies)}")
+  except:
+    print("Could not calculate QED as no molecule generated!")
+    
   return unique_smiles,unique_entropies
 
 def calc_qed(smiles):
