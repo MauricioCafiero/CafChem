@@ -389,7 +389,7 @@ class linear_svr_methods():
       model = Lasso(alpha=self.alpha, max_iter = self.max_iter)
       modelname = "Lasso"
     elif self.method == "svr":
-      model = SVR(kernel="poly",degree=self.degree, epsilon=self.epsilon,coef0=self.coef0)
+      model = SVR(kernel="poly",degree=self.degree, epsilon=self.epsilon,coef0=self.coef0, C=self.C)
       modelname = "Support Vector Regression"
 
     print("model selected: ",modelname)
