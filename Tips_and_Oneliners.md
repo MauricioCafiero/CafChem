@@ -165,7 +165,7 @@ df_3["IC50 (nM)"].count()
 ## Save MatPlotLib image
 Making a plot with MatPlotLib and saving the image
 ```
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 x = [i for i in range(100)]
 y = [i**2 for i in range(100)]
