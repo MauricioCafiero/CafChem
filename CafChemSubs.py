@@ -49,6 +49,22 @@ def add_fragment(frag_in: str, name_in: str):
   print("Fragment added:")
   print(f"Name: {name_in}     Fragment: {frag_in}")
 
+def sub_fragment(frag_in: str, name_in: str):
+  '''
+  accepts a SMILES representation of a fragment to remove from the substitution 
+  list as well as the corresponding a name to remove. 
+  
+    Args:
+      frag_in: a SMILES representation of a fragment to remove.
+      name_in: a name for the fragment to remove
+  '''
+  global new_fragments
+  global new_fragment_names
+  new_fragments.remove(frag_in)
+  new_fragment_names.remove(name_in)
+  print("Fragment added:")
+  print(f"Name: {name_in}     Fragment: {frag_in}") 
+
 def which_fragments():
   '''
   prints the current list of fragments and names for substitution

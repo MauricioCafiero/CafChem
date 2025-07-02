@@ -158,7 +158,7 @@ def featurize(smiles_list: list, y: list,
 
   return f, y, Xa
 
-def remove_outliers(f: np.array, y: list, Xa: list):
+def remove_outliers(f: np.array, y: list, Xa: list, use_f = True, use_y = False):
   '''
     Identifies outliers using Elliptic Envelope and removes them from the
     feature matrix, the target list, and the SMILES list.
@@ -167,17 +167,35 @@ def remove_outliers(f: np.array, y: list, Xa: list):
       f: feature matrix
       y: target list
       Xa: SMILES list
+      use_f: Boolean, use features to identify outliers?
+      use_y: Boolean, use target values to ientify outliers.
     Returns:
       f: feature matrix without outliers
       y: target list without outliers
       Xa: SMILES list without outliers
   '''
-  outlier_detector = EllipticEnvelope(contamination=0.01)
-  outlier_detector.fit(f)
-  outlier_array = outlier_detector.predict(f)
-  indicies = np.where(outlier_array == -1)
-  print("===========================================================")
-  print(f"Outliers found in the following locations: {indicies}")
+  if use_f == True and use_y == True:
+      print("Can only use one criteria at a time! Choosing f.")
+      use_y = False
+  
+  if use_f == False and use_y == False:
+      print("Must use one criteria at least! Choosing f.")
+      use_f = True
+  
+  if use_f:
+      outlier_detector = EllipticEnvelope(contamination=0.01)
+      outlier_detector.fit(f)
+      outlier_array = outlier_detector.predict(f)
+      indicies = np.where(outlier_array == -1)
+      print("===========================================================")
+      print(f"Outliers found in the following locations: {indicies} using f.")
+  if use_y:
+      outlier_detector = EllipticEnvelope(contamination=0.01)
+      outlier_detector.fit(f)
+      outlier_array = outlier_detector.predict(f)
+      indicies = np.where(outlier_array == -1)
+      print("===========================================================")
+      print(f"Outliers found in the following locations: {indicies} using y.")
 
   print("Starting outlier removal.")
   for j,i in enumerate(indicies[0]): #indicies[0] for elliptic, indicies for quartile
