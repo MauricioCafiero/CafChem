@@ -25,7 +25,10 @@ def read_data(filename: str, smiles_column: str, target_columns: list[str], tran
   '''
   df_input = pd.read_csv(filename)
   smis = df_input.loc[:, smiles_column].values
-  ys_raw = df_input.loc[:, target_columns].values
+  if target_columns[0] == "None":
+    ys_raw = [0.0]*len(smis)
+  else:
+    ys_raw = df_input.loc[:, target_columns].values
 
   if transform_flag:
     ys = np.log10(ys_raw)
@@ -100,7 +103,7 @@ def prediction_dataset(smis: list, ys = None):
   mp = nn.BondMessagePassing(**chemeleon_mp['hyper_parameters'])
   mp.load_state_dict(chemeleon_mp['state_dict'])
 
-  if ys.any() == None:
+  if ys == None:
     ys = np.zeros((len(smis),1))
     
   chemprop_dir = Path.cwd().parent
