@@ -104,7 +104,7 @@ def prediction_dataset(smis: list):
   
   featurizer = featurizers.SimpleMoleculeMolGraphFeaturizer()
   pred_dset = data.MoleculeDataset(pred_data, featurizer=featurizer)
-  pred_loader = data.build_dataloader(pred_dset, suffle=False)
+  pred_loader = data.build_dataloader(pred_dset, shuffle=False)
    
   return pred_loader, pred_dset
 
