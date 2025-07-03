@@ -7,6 +7,8 @@
 - [Save RDKit image](#save-an-image-file-from-rdkit) <br>
 - [Pandas frequently used methods](#general-pandas-tips) <br>
 - [Making and saving a Matplotlib plot](#save-matplotlib-image) <br>
+- [Quick Linear Regression](#quick-linear-regression) <br>
+- [Correlation Heatmap from dataframe](#correlation-heatmap-from-dataframe) <br>
 
 
 ## Using a text classifier from HuggingFace
@@ -189,4 +191,34 @@ plt.show
 Produces the image below and saved the file!
 ![image](https://github.com/user-attachments/assets/465848f0-79b5-426d-87b0-4c2c5b77f691)
 
+## Quick Linear Regression
+
 ```
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+
+model.fit(x, y)
+score = model.score(x,y)
+```
+
+## Correlation Heatmap from dataframe
+
+Find Pearson correlations and display as a heatmap.
+```
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+corr_matrix = df.corr()
+
+fig, ax = plt.subplots(figsize=(12, 5))
+plt.tick_params(axis='both', which='major', labelsize=10, left=False,
+                labelbottom = False, bottom=False, top = False, labeltop=True)
+plt.title("correlation heatmap")
+
+map_0 = sns.heatmap(corr_matrix, annot = True, cmap = "cool")
+map_0_fig = map_0.get_figure()
+plt.tight_layout()
+map_0_fig.savefig("heatmap.jpg")
+```
+
