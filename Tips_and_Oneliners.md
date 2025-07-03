@@ -164,6 +164,13 @@ df_3["IC50 (nM)"].mean()
 df_3["IC50 (nM)"].sum()
 df_3["IC50 (nM)"].count()
 ```
+Add a list of data (new_list) to an existing dataframe, in a column call "new_column":
+```
+df = pd.read_csv("myfile.csv")
+df.insert(0,"new column",new_list,True)
+df.to_csv("new_file.csv", index = False)
+```
+
 ## Save MatPlotLib image
 Making a plot with MatPlotLib and saving the image
 ```
