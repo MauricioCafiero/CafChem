@@ -609,4 +609,4 @@ def analyze_predictions(predictions: list, truths: list):
     else:
       print(f"Predicted: {pred:20}, Truth: {exp:10.2f}, prediction is incorrect")
 
-  print(f"Percentage of correct predictions: {(100*num_correct/len(preds)):.3f}")
+  print(f"Percentage of correct predictions: {(100*num_correct/len(predictions)):.3f}")
