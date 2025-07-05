@@ -120,43 +120,43 @@ with open(filename+".png",'wb+') as outf:
 ## General Pandas tips
 Assuming that pandas is imported!
 
-Create a new dataframe (df_2) as a subset of another dataframe (df_1) which has the columns: "Smiles","IC50","Column 2","Column 3", "Column 4"...:
+#### Create a new dataframe (df_2) as a subset of another dataframe (df_1) which has the columns: "Smiles","IC50","Column 2","Column 3", "Column 4"...:
 ```
 df_2 = df_1[["Smiles","IC50","Column 2"]]
 ```
-Filter a dataframe (df_2) for specific values in a specific column and create a new dataframe (df_3):
+#### Filter a dataframe (df_2) for specific values in a specific column and create a new dataframe (df_3):
 ```
 df_3 = df_2[df_2["IC50"] < 100]
 ```
-Drop a column from a dataframe:
+#### Drop a column from a dataframe:
 ```
 df_3.drop(["Column 2"],axis=1,inplace=True)
 ```
-Rename columns:
+#### Rename columns:
 ```
 df_3 = df_3.rename(columns={"Smiles":"SMILES","IC50":"IC50 (nM)"})
 ```
-Apply a function to every row in a column (assuming you have a function defined called *smiles_to_canon* and it takes the values in the givn row as arguments):
+#### Apply a function to every row in a column (assuming you have a function defined called *smiles_to_canon* and it takes the values in the given row as arguments):
 ```
 df_3["SMILES"] = df_3["SMILES"].apply(smiles_to_canon)
 ```
-Drop duplicates from a dataframe based on a specific column: 
+#### Drop duplicates from a dataframe based on a specific column: 
 ```
 df_3 = df_3.drop_duplicates(subset=["SMILES"], keep= "last")
 ```
-Sort a dataframe by a specific row:
+### Sort a dataframe by a specific row:
 ```
 df_3.sort_values(by=["IC50 (nM)"],inplace=True)
 ```
-Get descriptive statistics for all columns in a dataframe:
+#### Get descriptive statistics for all columns in a dataframe:
 ```
 df_3.describe()
 ```
-Get statistics for only rows 5 and beyond:
+#### Get statistics for only rows 5 and beyond:
 ```
 df_3.iloc[5:].describe()
 ```
-Get statistics for an individual column:
+#### Get statistics for an individual column:
 ```
 df_3["IC50 (nM)"].max()
 df_3["IC50 (nM)"].min()
@@ -164,10 +164,16 @@ df_3["IC50 (nM)"].mean()
 df_3["IC50 (nM)"].sum()
 df_3["IC50 (nM)"].count()
 ```
-Add a list of data (new_list) to an existing dataframe, in a column call "new_column":
+#### Add a list of data (new_list) to an existing dataframe, in a column call "new_column":
 ```
 df = pd.read_csv("myfile.csv")
 df.insert(0,"new column",new_list,True)
+df.to_csv("new_file.csv", index = False)
+```
+Alternately, add the new column to the end:
+```
+df = pd.read_csv("myfile.csv")
+df["new column"] = new_list
 df.to_csv("new_file.csv", index = False)
 ```
 
