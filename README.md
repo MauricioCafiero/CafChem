@@ -7,12 +7,13 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [Basic machine learning and cleaning ChEMBL CSV files](#cafchembml) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
+- [SciKitLearn Classifiers](#cafchemclassifiers) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
 
 The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
 
-also see the list of [commonly used code snippets](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
+also see the list of [commonly used Python code snippets](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
 
 ## Install:
 ```
@@ -51,6 +52,12 @@ import CafChem.CafChemBML as ccml
 ## CafChemEleon
 - finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
 - save and load trained models and analyze data.
+## CafChemClassifiers
+- Create a classifier model using a variety of SciKitLearn models.
+- Load a CSV with quantitative data and create classes.
+- Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
+- Analyze data with confusion matrices.
 ## CafChemHFClassifier
 - Create a classifier model using HuggingFace.
+- Analyze data with confusion matrices.
 - Load datasets, add tokens, train, push all to the HuggingFace hub.
