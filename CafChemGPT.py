@@ -487,7 +487,7 @@ def load_gpt(filename: str, total_layers: int, max_length: int, VOCAB_SIZE: int)
 
   gpt_load = make_gpt(total_layers, max_length, VOCAB_SIZE)
 
-  f = open(f"layer_store_{filename}.txt", "w")
+  f = open(f"layer_store_{filename}.txt", "r")
   layer_name_store_raw = f.readlines()
   f.close()
 
@@ -503,6 +503,39 @@ def load_gpt(filename: str, total_layers: int, max_length: int, VOCAB_SIZE: int)
 
   gpt_load.load_weights(f"{filename}.weights.h5", skip_mismatch=True)
   print(f"model loaded with name: {filename}.")
+  gpt_load.summary()
+
+  return gpt_load
+
+def load_foundation():
+  '''
+    loads the GPT Foundation model.
+
+      Args:
+        None
+      Returns:
+        gpt_load: loaded GPT model
+  '''
+  VOCAB_SIZE = 100
+  max_length = 166
+  gpt_load = make_gpt(2, max_length, VOCAB_SIZE)
+
+  f = open("CafChem/data/layer_store_GPT_ZN305_50epochs.txt", "r")
+  layer_name_store_raw = f.readlines()
+  f.close()
+
+  layer_name_store = []
+  for line in layer_name_store_raw:
+      line = line.replace("\n","")
+      layer_name_store.append(line)
+      print(line)
+
+  for i,layer in enumerate(gpt_load.layers):
+    layer.name = layer_name_store[i]
+    print(f"{layer.name} has been named!")
+
+  gpt_load.load_weights("CafChem/data/GPT_ZN305_50epochs.weights.h5", skip_mismatch=True)
+  print("Foundation model loaded.")
   gpt_load.summary()
 
   return gpt_load
