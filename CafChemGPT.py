@@ -33,7 +33,7 @@ def test_vocab(filename: str, smiles_column = 'SMILES'):
   #===========================================================================================
   #featurize
 
-  tokenizer=dc.feat.SmilesTokenizer(vocab_file="data/vocab.txt")
+  tokenizer=dc.feat.SmilesTokenizer(vocab_file="CafChem/data/vocab.txt")
   featname="SMILES Tokenizer"
 
   fl = list(map(lambda x: tokenizer.encode(x),Xa))
@@ -60,7 +60,7 @@ def test_vocab(filename: str, smiles_column = 'SMILES'):
   new_vocab_size = len(fl2set)
   print("New vocabulary size: ",new_vocab_size)
 
-  f = open("data/vocab_305K.txt", "r")
+  f = open("CafChem/data/vocab_305K.txt", "r")
   raw_lines = f.readlines()
   f.close()
   VOCAB_SIZE = len(raw_lines)
@@ -118,7 +118,7 @@ def make_datasets(filename: str, smiles_column = 'SMILES'):
   #===========================================================================================
   #featurize
 
-  tokenizer=dc.feat.SmilesTokenizer(vocab_file="data/vocab_305K.txt")
+  tokenizer=dc.feat.SmilesTokenizer(vocab_file="CafChem/data/vocab_305K.txt")
   featname="SMILES Tokenizer"
 
   fl = list(map(lambda x: tokenizer.encode(x),Xa))
@@ -144,7 +144,7 @@ def make_datasets(filename: str, smiles_column = 'SMILES'):
   #   fl2set.update(sublist)
   # temp_vocab_size = len(fl2set)
 
-  f = open("data/vocab_305K.txt", "r")
+  f = open("CafChem/data/vocab_305K.txt", "r")
   lines = f.readlines()
   f.close()
   VOCAB_SIZE = len(lines)
@@ -418,7 +418,7 @@ def make_finetune_gpt(num_new_blocks: int, freeze_old_layers = True):
   max_length = 166
   gpt_ft = make_gpt(2+num_new_blocks, max_length, VOCAB_SIZE)
 
-  f = open("data/layer_store_GPT_ZN305_50epochs.txt", "r")
+  f = open("CafChem/data/layer_store_GPT_ZN305_50epochs.txt", "r")
   layer_name_store_raw = f.readlines()
   f.close()
 
@@ -441,7 +441,7 @@ def make_finetune_gpt(num_new_blocks: int, freeze_old_layers = True):
 
   gpt_ft.layers[-1].name = "dense_X"
 
-  gpt_ft.load_weights("data/GPT_ZN305_50epochs.weights.h5", skip_mismatch=True)
+  gpt_ft.load_weights("CafChem/data/GPT_ZN305_50epochs.weights.h5", skip_mismatch=True)
 
   if freeze_old_layers == True:
     for layer in gpt_ft.layers[0:-new_layers]:                 #make old layers freeze and only train new layers
