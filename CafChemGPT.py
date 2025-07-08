@@ -178,9 +178,9 @@ def strip_smiles(input_string):
       Returns:
         output_string: cleaned SMILES string
   '''
-    output_string = input_string.replace(" ","").replace("[CLS]","").replace("[SEP]","").replace("[PAD]","")
-    output_string = output_string.replace("[Na+].","").replace(".[Na+]","")
-    return output_string
+  output_string = input_string.replace(" ","").replace("[CLS]","").replace("[SEP]","").replace("[PAD]","")
+  output_string = output_string.replace("[Na+].","").replace(".[Na+]","")
+  return output_string
 
 def mols_from_smiles(input_smiles_list):
   '''
@@ -192,24 +192,24 @@ def mols_from_smiles(input_smiles_list):
         valid_mols: list of RDKit molecules
         valid_smiles: list of SMILES strings
   '''
-    valid_mols = []
-    valid_smiles = []
+  valid_mols = []
+  valid_smiles = []
 
-    good_count = 0
-    for ti, smile in enumerate(input_smiles_list):
-       temp_mol = Chem.MolFromSmiles(smile)
-       if temp_mol != None:
-           valid_mols.append(temp_mol)
-           valid_smiles.append(smile)
-           good_count += 1
-       else:
-           print(f"SMILES {ti} was not valid!")
-
-    if len(valid_mols) == len(valid_smiles) == good_count:
-        print(f"Generated a total of {good_count} mol objects")
+  good_count = 0
+  for ti, smile in enumerate(input_smiles_list):
+    temp_mol = Chem.MolFromSmiles(smile)
+    if temp_mol != None:
+      valid_mols.append(temp_mol)
+      valid_smiles.append(smile)
+      good_count += 1
     else:
-        print("mismatch!")
-    return valid_mols, valid_smiles
+      print(f"SMILES {ti} was not valid!")
+
+  if len(valid_mols) == len(valid_smiles) == good_count:
+    print(f"Generated a total of {good_count} mol objects")
+  else:
+    print("mismatch!")
+  return valid_mols, valid_smiles
 
 def test_gen(model, tokenizer, T_int: float, VOCAB_SIZE: int, rn_seed = 42):
   '''
@@ -273,81 +273,81 @@ def casual_attention_mask(batch_size,n_dest,n_src,dtype):
   '''
     Make a causal attention mask
   '''
-    i = tf.range(n_dest)[:,None]
-    j = tf.range(n_src)
-    m = i >= j - n_src + n_dest
-    mask = tf.cast(m,dtype)
-    mask = tf.reshape(mask,[1,n_dest,n_src])
-    mult = tf.concat([tf.expand_dims(batch_size,-1),tf.constant([1,1],dtype=tf.int32)],0)
-    return tf.tile(mask,mult)
+  i = tf.range(n_dest)[:,None]
+  j = tf.range(n_src)
+  m = i >= j - n_src + n_dest
+  mask = tf.cast(m,dtype)
+  mask = tf.reshape(mask,[1,n_dest,n_src])
+  mult = tf.concat([tf.expand_dims(batch_size,-1),tf.constant([1,1],dtype=tf.int32)],0)
+  return tf.tile(mask,mult)
 
 class TransformerBlock(tf.keras.layers.Layer):
   '''
     Transformer block with multi-head attention.
   '''
-    def __init__(self,num_heads,key_dim,embed_dim,ff_dim,dropout_rate=0.1):
-        super(TransformerBlock,self).__init__()
-        self.num_heads = num_heads
-        self.key_dim = key_dim
-        self.embed_dim = embed_dim
-        self.ff_dim = ff_dim
-        self.dropout_rate = dropout_rate
-        self.attn = tf.keras.layers.MultiHeadAttention(self.num_heads,self.key_dim,
-                                                       output_shape=self.embed_dim)
-        self.dropout_1 = tf.keras.layers.Dropout(self.dropout_rate)
-        self.ln_1 = tf.keras.layers.LayerNormalization(epsilon=0.000001)
-        self.ffn_1 = tf.keras.layers.Dense(self.ff_dim,activation="relu")
-        self.ffn_2 = tf.keras.layers.Dense(self.embed_dim)
-        self.dropout_2 = tf.keras.layers.Dropout(self.dropout_rate)
-        self.ln_2 = tf.keras.layers.LayerNormalization(epsilon=0.000001)
+  def __init__(self,num_heads,key_dim,embed_dim,ff_dim,dropout_rate=0.1):
+    super(TransformerBlock,self).__init__()
+    self.num_heads = num_heads
+    self.key_dim = key_dim
+    self.embed_dim = embed_dim
+    self.ff_dim = ff_dim
+    self.dropout_rate = dropout_rate
+    self.attn = tf.keras.layers.MultiHeadAttention(self.num_heads,self.key_dim,
+                                                    output_shape=self.embed_dim)
+    self.dropout_1 = tf.keras.layers.Dropout(self.dropout_rate)
+    self.ln_1 = tf.keras.layers.LayerNormalization(epsilon=0.000001)
+    self.ffn_1 = tf.keras.layers.Dense(self.ff_dim,activation="relu")
+    self.ffn_2 = tf.keras.layers.Dense(self.embed_dim)
+    self.dropout_2 = tf.keras.layers.Dropout(self.dropout_rate)
+    self.ln_2 = tf.keras.layers.LayerNormalization(epsilon=0.000001)
 
-    def call(self,inputs):
-        input_shape = tf.shape(inputs)
-        batch_size2 = input_shape[0]
-        seq_len = input_shape[1]
-        casual_mask = casual_attention_mask(batch_size2,seq_len,seq_len,tf.bool)
-        attention_output, attention_scores = self.attn(inputs,inputs,
-                                                       attention_mask=casual_mask,
-                                                       return_attention_scores=True)
-        attention_output = self.dropout_1(attention_output)
-        out1 = self.ln_1(inputs + attention_output)
-        ffn_1 = self.ffn_1(out1)
-        ffn_2 = self.ffn_2(ffn_1)
-        ffn_output = self.dropout_2(ffn_2)
-        return (self.ln_2(out1+ffn_output),attention_scores)
+  def call(self,inputs):
+    input_shape = tf.shape(inputs)
+    batch_size2 = input_shape[0]
+    seq_len = input_shape[1]
+    casual_mask = casual_attention_mask(batch_size2,seq_len,seq_len,tf.bool)
+    attention_output, attention_scores = self.attn(inputs,inputs,
+                                                    attention_mask=casual_mask,
+                                                    return_attention_scores=True)
+    attention_output = self.dropout_1(attention_output)
+    out1 = self.ln_1(inputs + attention_output)
+    ffn_1 = self.ffn_1(out1)
+    ffn_2 = self.ffn_2(ffn_1)
+    ffn_output = self.dropout_2(ffn_2)
+    return (self.ln_2(out1+ffn_output),attention_scores)
 
-    def get_config(self):
-        config = super().get_config()
-        config.update({"key_dim": self.key_dim, "embed_dim": self.embed_dim,
-                      "num_heads": self.num_heads,"ff_dim": self.ff_dim,
-                      "dropout_rate": self.dropout_rate})
-        return config
+  def get_config(self):
+    config = super().get_config()
+    config.update({"key_dim": self.key_dim, "embed_dim": self.embed_dim,
+                  "num_heads": self.num_heads,"ff_dim": self.ff_dim,
+                  "dropout_rate": self.dropout_rate})
+    return config
 
 class TokenAndPositionEmbedding(tf.keras.layers.Layer):
   '''
     Embeds tokens and positions.
   '''
-    def __init__(self,max_len,vocab_size,embed_dim):
-        super(TokenAndPositionEmbedding,self).__init__()
-        self.max_len = max_len
-        self.vocab_size = vocab_size
-        self.embed_dim = embed_dim
-        self.token_emb = tf.keras.layers.Embedding(input_dim=vocab_size,
-                                                    output_dim = embed_dim)
-        self.pos_emb = tf.keras.layers.Embedding(input_dim=max_len,output_dim=embed_dim)
+  def __init__(self,max_len,vocab_size,embed_dim):
+    super(TokenAndPositionEmbedding,self).__init__()
+    self.max_len = max_len
+    self.vocab_size = vocab_size
+    self.embed_dim = embed_dim
+    self.token_emb = tf.keras.layers.Embedding(input_dim=vocab_size,
+                                                output_dim = embed_dim)
+    self.pos_emb = tf.keras.layers.Embedding(input_dim=max_len,output_dim=embed_dim)
 
-    def call(self,x):
-        maxlen = tf.shape(x)[-1]
-        positions = tf.range(start=0,limit=maxlen,delta=1)
-        positions = self.pos_emb(positions)
-        x = self.token_emb(x)
-        return x + positions
+  def call(self,x):
+    maxlen = tf.shape(x)[-1]
+    positions = tf.range(start=0,limit=maxlen,delta=1)
+    positions = self.pos_emb(positions)
+    x = self.token_emb(x)
+    return x + positions
 
-    def get_config(self):
-        config = super().get_config()
-        config.update({"max_len": self.max_len, "vocab_size": self.vocab_size,
-                      "embed_dim": self.embed_dim})
-        return config
+  def get_config(self):
+    config = super().get_config()
+    config.update({"max_len": self.max_len, "vocab_size": self.vocab_size,
+                  "embed_dim": self.embed_dim})
+    return config
 
 def make_gpt(num_blocks: int, max_length: int, VOCAB_SIZE: int):
   '''
