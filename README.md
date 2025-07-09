@@ -1,6 +1,7 @@
 # CafChem
 Libraries/modules for the CafChem tools for computational chemistry/drug design. Modules include:
 
+- [Train a GPT and generate novel molecules](#cafchemgpt) <br>
 - [QM calculations with the UMA MLIP](#cafchemqm_uma) <br>
 - [Generative tools for hit expansion](#cafchemsubs) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP](#cafchemredock) <br>
@@ -19,6 +20,8 @@ also see the list of [commonly used Python code snippets](https://github.com/Mau
 ```
 git clone https://github.com/MauricioCafiero/CafChem.git
 
+import CafChem.CafChemGPT as ccgpt
+import CafChem.CafChemGPTINF as ccinf
 import CafChem.CafChemHFClassifier as cchf
 import CafChem.CafChemBoltz as ccb
 import CafChem.CafChemQM_UMA as ccqm
@@ -27,6 +30,9 @@ import CafChem.CafChemSubs as ccs
 import CafChem.CafChemReDock as ccr
 import CafChem.CafChemBML as ccml
 ```
+## CafChemGPT
+- Train a GPT on a SMILES dataset. Use the tools provided to generate novel molecules.
+- Using a provided foundation model, finetune with a specific dataset for targeted molecule generation. 
 
 ## CafChemQM_UMA
 - Uses ASE to implement calculations using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
