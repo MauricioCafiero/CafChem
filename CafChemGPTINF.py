@@ -157,7 +157,7 @@ def mols_from_smiles(input_smiles_list):
     print("mismatch!")
   return valid_mols, valid_smiles
 
-def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, T_int: float, VOCAB_SIZE: int, rn_seed = 42):
+def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, TEMP: float, VOCAB_SIZE: int, rn_seed = 42):
   '''
     use a GPT model to generate novel molecules.
 
@@ -166,7 +166,7 @@ def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, T_int: float, VOCA
         use_ramp: Boolean to use temperature ramp during inference
         model: the GPT model to use
         tokenizer: tokenizer to use
-        T_int: temperature for inference
+        TEMP: temperature for inference
         VOCAB_SIZE: vocabulary size
         rn_seed: random seed
       Returns:
@@ -196,7 +196,9 @@ def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, T_int: float, VOCA
       
       c_o = int(c_final*sig_start)
       if use_ramp == True:
-          T_int = T_int*(1/(1+np.exp(-(c-c_o))))
+          T_int = TEMP*(1/(1+np.exp(-(c-c_o))))
+      else:
+          T_int = TEMP
       
       results, _ = model.predict(test_array)
 
