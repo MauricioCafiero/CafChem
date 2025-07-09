@@ -1,6 +1,7 @@
 # Topics Covered:
 - [Using a text classifier from HuggingFace](#using-a-text-classifier-from-huggingface) <br>
 - [Quick reading and writing to CSVs](#quick-reading-and-writing-to-csvs) <br>
+- [Get random elements from a list](#get-random-elements-from-a-list) <br>
 - [Read and write pickle files](#read-and-write-pickle-files) <br>
 - [Getting all of a particular file-type in a directory and making a list](#getting-all-of-a-particular-file-type-in-a-directory-and-making-a-list) <br>
 - [Reload library](#reload-library) <br>
@@ -62,6 +63,26 @@ Finally, save a new CSV:
 ```
 logic50_df.to_csv("logic50_df.csv")
 ```
+## Get random elements from a list
+You can directly generate a list of random elements from another list:
+```
+import random
+# assume a *master list* containing many elements
+
+sub_list = random.choices(master_list,k=num_elements)
+
+#where num_elements < len(master_list)
+```
+Alternately, make a list of random indicies:
+```
+import random
+# assume you want *n* indicies between 0 and 1000
+
+idxs = random.sample(range(0,1000), n)
+
+# you can the loop over these indices
+```
+
 
 ## Read and write pickle files
 The code below opens a file in binary mode for writing, ansd then 'dumps' the contents into it.
@@ -144,7 +165,7 @@ df_3["SMILES"] = df_3["SMILES"].apply(smiles_to_canon)
 ```
 df_3 = df_3.drop_duplicates(subset=["SMILES"], keep= "last")
 ```
-### Sort a dataframe by a specific row:
+#### Sort a dataframe by a specific row:
 ```
 df_3.sort_values(by=["IC50 (nM)"],inplace=True)
 ```
