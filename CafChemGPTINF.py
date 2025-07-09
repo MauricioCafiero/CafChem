@@ -157,7 +157,7 @@ def mols_from_smiles(input_smiles_list):
     print("mismatch!")
   return valid_mols, valid_smiles
 
-def gen_mols(prompts: list, use_ramp: Boolean, model, tokenizer, T_int: float, VOCAB_SIZE: int, rn_seed = 42):
+def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, T_int: float, VOCAB_SIZE: int, rn_seed = 42):
   '''
     use a GPT model to generate novel molecules.
 
