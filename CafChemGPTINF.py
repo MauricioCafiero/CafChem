@@ -97,7 +97,7 @@ def make_prompts(num_prompts: int, prompt_length: int):
       Returns:
         prompts: a list of prompts
   '''
-  df = pd.read_csv("ZN305K_smiles.csv")
+  df = pd.read_csv("CafChem/data/ZN305K_smiles.csv")
 
   Xa = []
   for smiles in df["SMILES"]:
