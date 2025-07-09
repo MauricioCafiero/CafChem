@@ -100,7 +100,7 @@ def make_prompts(num_prompts: int, prompt_length: int):
   df = pd.read_csv("ZN305K_smiles.csv")
 
   Xa = []
-  for smiles in df["SMILES]:
+  for smiles in df["SMILES"]:
     smiles = smiles.replace("[Na+].","").replace("[Cl-].","").replace(".[Cl-]","").replace(".[Na+]","")
     smiles = smiles.replace("[K+].","").replace("[Br-].","").replace(".[K+]","").replace(".[Br-]","")
     smiles = smiles.replace("[I-].","").replace(".[I-]","").replace("[Ca2+].","").replace(".[Ca2+]","")
