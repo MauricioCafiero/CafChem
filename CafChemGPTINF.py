@@ -107,7 +107,7 @@ def make_prompts(num_prompts: int, prompt_length: int):
     Xa.append(smiles)
 
 
-  raw_prompts = random.choices(Xa,num_prompts)
+  raw_prompts = random.choices(Xa,k=num_prompts)
   
   prompts = []
   for smile in raw_prompts:
