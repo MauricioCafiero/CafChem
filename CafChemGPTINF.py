@@ -224,9 +224,18 @@ def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, TEMP: float, VOCAB
   gen_molecules = list(map(lambda x: strip_smiles(x),gen_molecules))
 
   mols, smiles = mols_from_smiles(gen_molecules)
+  
+  final_smiles = []
+  final_mols = []
+  for smile, mol in zip(smiles,mols):
+      if smile not in final_smiles:
+          final_smiles.append(smile)
+          final_mols.append(mol)
+  
+  print(f"Generated {len(final_smiles)} unique molecules.")
 
-  img = Draw.MolsToGridImage(mols,molsPerRow=3,legends=smiles)
-  return img, smiles
+  img = Draw.MolsToGridImage(final_mols,molsPerRow=3,legends=final_smiles)
+  return img, final_smiles
 
 def casual_attention_mask(batch_size,n_dest,n_src,dtype):
   '''
