@@ -97,7 +97,7 @@ def make_prompts(num_prompts: int, prompt_length: int):
       Returns:
         prompts: a list of prompts
   '''
-  df = pd.read_csv("ZN305K_smiles.csv)
+  df = pd.read_csv("ZN305K_smiles.csv")
 
   Xa = []
   for smiles in df["SMILES]:
@@ -224,7 +224,7 @@ def gen_mols(prompts: list, use_ramp: Boolean, model, tokenizer, T_int: float, V
   mols, smiles = mols_from_smiles(gen_molecules)
 
   img = Draw.MolsToGridImage(mols,molsPerRow=3,legends=smiles)
-  return img
+  return img, smiles
 
 def casual_attention_mask(batch_size,n_dest,n_src,dtype):
   '''
