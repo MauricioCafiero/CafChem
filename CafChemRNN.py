@@ -167,7 +167,7 @@ def make_datasets(filename: str, smiles_column = 'SMILES'):
   fx = x
   fy = y
 
-  return fx, fy, VOCAB_SIZE, tokenizer, max_length, fl2set
+  return fx, fy, VOCAB_SIZE, tokenizer, max_length
 
 def strip_smiles(input_string):
   '''
