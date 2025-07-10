@@ -295,7 +295,7 @@ def make_rnn(num_layers: int, layer_size: int, max_length: int, vocab_size: int)
 
   return rnn
 
-def save_RNN(rnn, filename: str):
+def save_rnn(rnn, filename: str):
   '''
     saves a RNN model.
 
@@ -336,7 +336,7 @@ def make_finetune_rnn(num_new_layers: int, layer_size: int = 128, freeze_old_lay
   '''
   VOCAB_SIZE = 100
   max_length = 166
-  rnn_ft = make_rnn(2+num_new_blocks, layer_size, max_length, VOCAB_SIZE)
+  rnn_ft = make_rnn(2+num_new_layers, layer_size, max_length, VOCAB_SIZE)
 
   f = open("CafChem/data/layer_store_RNN_ZN305_50epochs.txt", "r")
   layer_name_store_raw = f.readlines()
@@ -350,13 +350,13 @@ def make_finetune_rnn(num_new_layers: int, layer_size: int = 128, freeze_old_lay
       print(line)
   print("===========================================")
 
-  new_layers = num_new_blocks + 1
+  new_layers = num_new_layers + 1
   for i,layer in enumerate(rnn_ft.layers[:-new_layers]):
     layer.name = layer_name_store[i]
     print(f"{layer.name} has been named!")
 
   for i,layer in enumerate(rnn_ft.layers[-new_layers:-1]):
-    layer.name = f"transformer_block_X_{i+1}"
+    layer.name = f"GRU_layer_X_{i+1}"
     print(f"{layer.name} has been named!")
 
   rnn_ft.layers[-1].name = "dense_X"
@@ -460,3 +460,83 @@ def load_foundation():
   rnn_load.summary()
 
   return rnn_load
+
+def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, TEMP: float, VOCAB_SIZE: int, rn_seed = 42):
+  '''
+    use an RNN model to generate novel molecules.
+
+      Args:
+        prompts: a list of prompts for inference
+        use_ramp: Boolean to use temperature ramp during inference
+        model: the GPT model to use
+        tokenizer: tokenizer to use
+        TEMP: temperature for inference
+        VOCAB_SIZE: vocabulary size
+        rn_seed: random seed
+      Returns:
+        img: image of generated molecules
+  '''
+  tf.random.set_seed(rn_seed)
+
+  test_string = prompts
+  batch_length = len(test_string)
+  prompt_length = len(test_string[0])
+  test_xlist = np.empty([batch_length,prompt_length], dtype=int)
+
+  test_tokenized = list(map(lambda x: tokenizer.encode(x),test_string))
+  for i in range(batch_length):
+      test_xlist[i][:] = test_tokenized[i][:prompt_length]
+  test_array = np.array(test_xlist)
+
+  proba = np.empty([batch_length,VOCAB_SIZE])
+  rescaled_logits = np.empty([batch_length,VOCAB_SIZE])
+  preds = np.empty([batch_length])
+  gen_molecules = np.empty([batch_length])
+
+  c_final = 90 - prompt_length
+  sig_start = 0.10
+  
+  for c in range(0,c_final,1):
+      
+      c_o = int(c_final*sig_start)
+      if use_ramp == True:
+          T_int = TEMP*(1/(1+np.exp(-(c-c_o))))
+      else:
+          T_int = TEMP
+      
+      results = model.predict(test_array)
+
+      if T_int < 0.015:
+          print(f"using zero temp generation with {T_int}.")
+          for j in range(batch_length):
+              preds[j] = tf.argmax(results[j][-1])
+              preds = list(map(lambda x: int(x),preds))
+      else:
+          print(f"using variable temp generation with {T_int}.")
+          for j in range(batch_length):
+              proba[j] = (results[j][-1:]) ** (1/T_int)
+              rescaled_logits[j] = ( proba[j][:] ) / np.sum(proba[j][:])
+              preds[j] = np.random.choice(len(rescaled_logits[j][:]),
+                                          p=rescaled_logits[j][:])
+              preds = list(map(lambda x: int(x),preds))
+      test_array = np.c_[test_array,preds]
+      print(test_array.shape)
+
+  gen_molecules = list(map(lambda x: tokenizer.decode(x),test_array))
+  gen_molecules = list(map(lambda x: tokenizer.convert_tokens_to_string(x),
+                            gen_molecules))
+  gen_molecules = list(map(lambda x: strip_smiles(x),gen_molecules))
+
+  mols, smiles = mols_from_smiles(gen_molecules)
+  
+  final_smiles = []
+  final_mols = []
+  for smile, mol in zip(smiles,mols):
+      if smile not in final_smiles:
+          final_smiles.append(smile)
+          final_mols.append(mol)
+  
+  print(f"Generated {len(final_smiles)} unique molecules.")
+
+  img = Draw.MolsToGridImage(final_mols,molsPerRow=3,legends=final_smiles)
+  return img, final_smiles
