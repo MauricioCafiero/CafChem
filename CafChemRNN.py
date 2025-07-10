@@ -438,7 +438,7 @@ def load_foundation():
   '''
   VOCAB_SIZE = 100
   max_length = 166
-  layer_size = 128
+  layer_size = 256
   rnn_load = make_rnn(2, layer_size, max_length, VOCAB_SIZE)
 
   f = open("CafChem/data/layer_store_RNN_ZN305_50epochs.txt", "r")
@@ -540,3 +540,31 @@ def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, TEMP: float, VOCAB
 
   img = Draw.MolsToGridImage(final_mols,molsPerRow=3,legends=final_smiles)
   return img, final_smiles
+
+def make_prompts(num_prompts: int, prompt_length: int):
+  '''
+    Makes a set of prompts for inference
+
+      Args:
+        num_prompts: now many prompts to make_datasets
+        prompt_length: how many tokens in the prompt
+      Returns:
+        prompts: a list of prompts
+  '''
+  df = pd.read_csv("CafChem/data/ZN305K_smiles.csv")
+
+  Xa = []
+  for smiles in df["SMILES"]:
+    smiles = smiles.replace("[Na+].","").replace("[Cl-].","").replace(".[Cl-]","").replace(".[Na+]","")
+    smiles = smiles.replace("[K+].","").replace("[Br-].","").replace(".[K+]","").replace(".[Br-]","")
+    smiles = smiles.replace("[I-].","").replace(".[I-]","").replace("[Ca2+].","").replace(".[Ca2+]","")
+    Xa.append(smiles)
+
+
+  raw_prompts = random.choices(Xa,k=num_prompts)
+  
+  prompts = []
+  for smile in raw_prompts:
+    prompts.append(smile[:prompt_length])
+
+  return prompts
