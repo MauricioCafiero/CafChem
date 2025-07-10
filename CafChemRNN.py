@@ -4,6 +4,7 @@ import pandas as pd
 import deepchem as dc
 import time
 import transformers
+import random
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from sklearn.model_selection import train_test_split
