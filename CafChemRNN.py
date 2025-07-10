@@ -281,14 +281,16 @@ def make_rnn(num_layers: int, layer_size: int, max_length: int, vocab_size: int)
       Returns:
         rnn: RNN model
   '''
+  layers_list = [
+    tf.keras.Input(shape=(max_length,)),
+    tf.keras.layers.Embedding(input_dim=vocab_size,output_dim=24),
+    tf.keras.layers.GRU(layer_size,return_sequences=True),
+    tf.keras.layers.Dense(vocab_size,activation="softmax")]
+    for _ in range(num_layers-1):
+      layers_list.insert(-1,tf.keras.layers.GRU(layer_size,return_sequences=True))
   
-  inputs = tf.keras.Input(shape=(max_length,))
-  x = tf.keras.layers.Embedding(input_dim=vocab_size,output_dim=24)(inputs)
-  for _ in range(num_layers):
-      x,y = tf.keras.layers.GRU(layer_size,return_sequences=True)(x)
-  outputs = tf.keras.layers.Dense(vocab_size,activation="softmax")(x)
-
-  rnn = tf.keras.models.Model(inputs = inputs, outputs =[outputs])
+  rnn = tf.keras.Sequential(layers_list)
+  
   rnn.summary()
 
   return rnn
