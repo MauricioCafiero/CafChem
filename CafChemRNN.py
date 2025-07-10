@@ -269,7 +269,7 @@ def test_gen(model, tokenizer, T_int: float, VOCAB_SIZE: int, rn_seed = 42):
   img = Draw.MolsToGridImage(mols,molsPerRow=3,legends=smiles)
   return img
 
-def make_rnn(num_layers: int, layer_size: int = 128, max_length: int, vocab_size: int):
+def make_rnn(num_layers: int, layer_size: int, max_length: int, vocab_size: int):
   '''
     creates a RNN with a specified number of transformer blocks.
 
