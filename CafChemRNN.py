@@ -284,7 +284,7 @@ def make_rnn(num_layers: int, layer_size: int, max_length: int, vocab_size: int)
   
   inputs = tf.keras.Input(shape=(462,))
   x = tf.keras.layers.Embedding(input_dim=vocab_size,output_dim=12)(inputs)
-  for _ in num_layers:
+  for _ in range(num_layers):
       x = tf.keras.layers.GRU(layer_size,return_sequences=True)(x)
   outputs = tf.keras.layers.Dense(vocab_size,activation="softmax")(x)
 
