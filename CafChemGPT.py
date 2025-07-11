@@ -47,7 +47,7 @@ def trim_vocab(filename: str, tokens_to_remove: list):
   
   new_dict = {"SMILES": smiles_no_long}
   new_df = pd.DataFrame(new_dict)
-  new_df.to_csv(f"{filename.replace(".csv","")+"_trimmed.csv"}, index=False)
+  new_df.to_csv(f'{filename.replace(".csv","")+"_trimmed.csv"}', index=False)
   print("New CSV file written!")
   
 def test_vocab(filename: str, smiles_column = 'SMILES'):
