@@ -10,6 +10,47 @@ from rdkit.Chem import AllChem, Draw
 from sklearn.model_selection import train_test_split
 from deepchem.feat.smiles_tokenizer import SmilesTokenizer
 
+def trim_vocab(filename: str, tokens_to_remove: list):
+  '''
+    trims entries from a SMILES list that contain tokens not found in the 
+    Foundation model's vocabulary list. Also trims entries that are longer than the 
+    Foundation model's context window. 
+    
+        Args:
+            filename: a CSV file with the dataset to be trimmed
+            tokens_to_remove: a set pf tokens to remove,  obtained from the test_vocab tool.
+        Returns:
+            None: a new CSV file is saved with the trimmed list.
+  '''
+  
+  
+df = pd.read_csv(filename)
+
+  Xa = []
+  for smiles in df[smiles_column]:
+    smiles = smiles.replace("[Na+].","").replace("[Cl-].","").replace(".[Cl-]","").replace(".[Na+]","")
+    smiles = smiles.replace("[K+].","").replace("[Br-].","").replace(".[K+]","").replace(".[Br-]","")
+    smiles = smiles.replace("[I-].","").replace(".[I-]","").replace("[Ca2+].","").replace(".[Ca2+]","")
+    Xa.append(smiles)
+  
+  smiles_removed_tokens = []
+  for i,smiles in enumerate(Xa):
+    bad_list = [True if (token in smiles) else False for token in tokens_to_remove]
+    if not any(bad_list):
+      smiles_removed_tokens.append(smiles)   
+
+  smiles_no_long = []
+  for i,smiles in enumerate(smiles_removed_tokens):
+    if len(smiles) <= 166:
+      smiles_no_long.append(smiles)
+  
+  print(f"Removed {len(Xa) - len(smiles_no_long)} entries from the list!")
+  
+  new_dict = {"SMILES": smiles_no_long}
+  new_df = pd.DataFrame(new_dict)
+  new_df.to_csv(f"{filename.replace(".csv","")+"_trimmed.csv"}, index=False)
+  print("New CSV file written!")
+  
 def test_vocab(filename: str, smiles_column = 'SMILES'):
   '''
     Tests the vocabulary of a new dataset against the foundation model vocabulary.

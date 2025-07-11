@@ -62,7 +62,7 @@ def sub_fragment(frag_in: str, name_in: str):
   global new_fragment_names
   new_fragments.remove(frag_in)
   new_fragment_names.remove(name_in)
-  print("Fragment added:")
+  print("Fragment removed:")
   print(f"Name: {name_in}     Fragment: {frag_in}") 
 
 def which_fragments():
