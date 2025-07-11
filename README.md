@@ -3,6 +3,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 
 - [Train a GPT and generate novel molecules](#cafchemgpt) <br>
 - [Train an RNN and generate novel molecules](#cafchemrnn) <br>
+- [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
 - [QM calculations with the UMA MLIP](#cafchemqm_uma) <br>
 - [Generative tools for hit expansion](#cafchemsubs) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP](#cafchemredock) <br>
@@ -40,6 +41,10 @@ import CafChem.CafChemBML as ccml
 ## CafChemRNN
 - Train an RNN on a SMILES dataset. Use the tools provided to generate novel molecules.
 - Using a provided foundation model, finetune with a specific dataset for targeted molecule generation. 
+
+## CafChemTxGemma
+- Inference with TxGemma models
+- Finetune a TxGemma model on your medchem dataset
 
 ## CafChemQM_UMA
 - Uses ASE to implement calculations using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
