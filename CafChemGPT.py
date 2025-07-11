@@ -9,7 +9,7 @@ from rdkit.Chem import AllChem, Draw
 from sklearn.model_selection import train_test_split
 from deepchem.feat.smiles_tokenizer import SmilesTokenizer
 
-def trim_vocab(filename: str, tokens_to_remove: list):
+def trim_vocab(filename: str, tokens_to_remove: list, smiles_column = "SMILES"):
   '''
     trims entries from a SMILES list that contain tokens not found in the 
     Foundation model's vocabulary list. Also trims entries that are longer than the 
