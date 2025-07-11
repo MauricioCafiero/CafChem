@@ -24,7 +24,7 @@ def trim_vocab(filename: str, tokens_to_remove: list):
   '''
   
   
-df = pd.read_csv(filename)
+  df = pd.read_csv(filename)
 
   Xa = []
   for smiles in df[smiles_column]:
