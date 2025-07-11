@@ -24,6 +24,7 @@ git clone https://github.com/MauricioCafiero/CafChem.git
 
 import CafChem.CafChemGPT as ccgpt
 import CafChem.CafChemRNN as ccrnn
+import CafChem.CafChemTxGemma as cctxg
 import CafChem.CafChemGPTINF as ccinf
 import CafChem.CafChemHFClassifier as cchf
 import CafChem.CafChemBoltz as ccb
