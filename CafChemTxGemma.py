@@ -68,7 +68,11 @@ def get_some_tdc_tasks():
   '''
   tasks = ['LD50_Zhu', 'logP_Morgan','BindingDB_kd','BindingDB_ic50','BindingDB_ki',
            'Lipophilicity_AstraZeneca','Solubility_AqSolDB','Bioavailability_Ma',
-           'BBB_Martins','Skin_Reaction','Carcinogens_Lagunin','SARSCoV2_Vitro_Touret',
+           'BBB_Martins','PPBR_AZ','CYP2D6_Veith','CYP3A4_Veith','CYP2C9_Veith',
+           'CYP2C19_Veith','CYP1A2_Veith',
+           'CYP2D6_Substrate_CarbonMangels','CYP3A4_Substrate_CarbonMangels',
+           'CYP2C9_Substrate_CarbonMangels',
+           'Skin_Reaction','Carcinogens_Lagunin','SARSCoV2_Vitro_Touret',
            'SARSCOV2_3CLPro_Diamond','HIV','ClinTox']
   for task in tasks:
     print(task)
