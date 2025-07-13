@@ -7,6 +7,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [QM calculations with the UMA MLIP](#cafchemqm_uma) <br>
 - [Generative tools for hit expansion](#cafchemsubs) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP](#cafchemredock) <br>
+- [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
 - [Basic machine learning and cleaning ChEMBL CSV files](#cafchembml) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
@@ -26,6 +27,7 @@ import CafChem.CafChemGPT as ccgpt
 import CafChem.CafChemRNN as ccrnn
 import CafChem.CafChemTxGemma as cctxg
 import CafChem.CafChemGPTINF as ccinf
+import CafChemSkipDense as ccsd
 import CafChem.CafChemHFClassifier as cchf
 import CafChem.CafChemBoltz as ccb
 import CafChem.CafChemQM_UMA as ccqm
@@ -61,6 +63,9 @@ import CafChem.CafChemBML as ccml
 - dock molecular SMILES strings in a protein using DockString and save poses.
 - Calculate the interaction between a docking pose and a trimmed protein active site using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
 - visualize molecules.
+## CafChemSkipDense
+- Create regression and classification models using skipdense neural networks.
+- Train, save, load and evaluate models. 
 ## CafChemBML
 - read ChEMBL CSV files and clean data.
 - featurize data, remove outliers, scale, apply PCA and split into training ad validation sets.
