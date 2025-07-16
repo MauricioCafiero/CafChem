@@ -32,7 +32,7 @@ DRD2_data = {
         "charge": -1,
         "spin": 1,
         "constraints": [1, 10, 18, 27, 33, 42, 54, 62, 78, 89, 101, 110],
-        "size": 331
+        "size": 216
         }
 
 global MAOB_data
