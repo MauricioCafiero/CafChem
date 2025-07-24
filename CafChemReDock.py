@@ -53,6 +53,15 @@ MAOBnoFAD_data = {
         "size": 727
         }
 
+global ADRB2_data
+ADRB2_data = {
+        "file_location":"CafChem/data/ADRB2_dude_QM_site.xyz",
+        "charge": -2,
+        "spin": 1,
+        "constraints": [1, 16, 25, 33, 41, 49, 58, 66, 78, 84, 92, 100, 107, 122, 133, 145, 156, 170, 179, 189],
+        "size": 349
+        }
+
 def save_pose(pose_mol, pose_score, name,saved_index):
   '''
     Save the bext pose (lowest score) from a docking run as an SDF file. 
