@@ -762,11 +762,13 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
   '''
     rescores variables, compares rankings of different variables and returns accuracy, produces image of ranked molecules.
     Args: 
-
       df_raw: dataframe with data to analyse
       ref_col: column to be ranked against
       comp_col: column to be ranked
       step_size: number of variables in group for accuracy measurement
+    Returns:
+      accuracy: if the same two molecules appear in the same group
+      img: images of the molecues ranked, next to each other for comparison 
   '''
   
   df = df_raw.copy()
@@ -776,10 +778,7 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
   df.sort_values(by=[comp_col], inplace=True)
   new_list = df["smiles"].to_list() 
   number_correct = 0
-  # for ref, new in zip(smiles_list, new_list):
-  #   #print(ref, new)
-  #   if ref == new: 
-  #     number_correct += 1
+
   total_number = len(smiles_list) - (len(smiles_list)%step_size)
   ref_set = set()
   comp_set = set()
@@ -787,8 +786,7 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
     for j in range(i, i+step_size, 1):
       ref_set.add(smiles_list[j])
       comp_set.add(new_list[j])
-    #print(ref_set)
-    #print(comp_set)
+   
     for smile in comp_set:
       if smile in ref_set:
         number_correct += 1
