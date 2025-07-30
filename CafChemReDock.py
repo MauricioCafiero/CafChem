@@ -766,3 +766,53 @@ def xyz_to_sdf(xyz_file: str, sdf_file = None):
   writer = Chem.SDWriter(sdf_file)
   writer.write(mol)
   writer.close()
+
+def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
+  '''
+    rescores variables, compares rankings of different variables and returns accuracy, produces image of ranked molecules.
+    Args: 
+      df_raw: dataframe with data to analyse
+      ref_col: column to be ranked against
+      comp_col: column to be ranked
+      step_size: number of variables in group for accuracy measurement
+    Returns:
+      accuracy: if the same two molecules appear in the same group
+      img: images of the molecues ranked, next to each other for comparison 
+  '''
+  
+  df = df_raw.copy()
+  ref_list = df[ref_col].to_list() 
+  smiles_list = df["smiles"].to_list()
+
+  df.sort_values(by=[comp_col], inplace=True)
+  new_list = df["smiles"].to_list() 
+  number_correct = 0
+
+  total_number = len(smiles_list) - (len(smiles_list)%step_size)
+  ref_set = set()
+  comp_set = set()
+  for i in range(0, total_number, step_size):
+    for j in range(i, i+step_size, 1):
+      ref_set.add(smiles_list[j])
+      comp_set.add(new_list[j])
+   
+    for smile in comp_set:
+      if smile in ref_set:
+        number_correct += 1
+    ref_set = set()
+    comp_set = set()
+  
+  mols = []
+  legends = []
+  for ref,comp in zip(smiles_list, new_list):
+    mol_1 = Chem.MolFromSmiles(ref)
+    mol_2 = Chem.MolFromSmiles(comp)
+    mols.append(mol_1)
+    mols.append(mol_2)
+    legends.append("experimental")
+    legends.append(comp_col)
+  img = Draw.MolsToGridImage(mols, legends = legends, molsPerRow=2, subImgSize=(300,300))
+  pic = img.data
+
+  accuracy = number_correct/total_number
+  return accuracy, img
