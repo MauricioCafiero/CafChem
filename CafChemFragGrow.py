@@ -811,7 +811,7 @@ def view_all_poses_for_frag(which_frag: int, frags: list, bs: dict, new_molecule
 
   total_frags_length = 0
   for _ in range(len(new_molecules[which_frag])):
-    total_frags_length += frag["num_atoms"]
+    total_frags_length += frags[which_frag]["num_atoms"]
 
   viewer = py3Dmol.view(width=800, height=400)
   viewer.addModel(mol_data, "xyz")  # Add the trajectory frame
