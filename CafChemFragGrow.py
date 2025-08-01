@@ -596,13 +596,14 @@ def calc_frag_energy(new_molecule: list, frag: dict, atom_symbols: list, calcula
     
     return ie
 
-def view_frag_pose(frag_idx: int, pose_idx: int, bs: dict):
+def view_frag_pose(frag_idx: int, pose_idx: int, frags: list, bs: dict):
     '''
       Displays a fragment pose
 
       Args:
         frag_idx: index of the fragment to view
         pose_idx: index of the pose to view
+        frags: list of fragment dictionaries
         bs: dictionary for the binding site
       Returns:
         None; displays fragment pose
