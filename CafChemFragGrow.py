@@ -770,7 +770,7 @@ def view_all_poses_for_frag(which_frag: int, frags: list, bs: dict, new_molecule
 
   
   path = "frag_files/"
-  test_files = [f"{frag['name']}_combined.xyz"]
+  test_files = [f"{frags[which_frag]['name']}_combined.xyz"]
   
   all_symbols = combined_atoms
 
