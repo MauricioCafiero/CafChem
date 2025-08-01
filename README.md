@@ -14,6 +14,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
+- [Grow Fragments in a Binding Site](#cafchemfraggrow)<br>
 
 The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
 
@@ -35,6 +36,7 @@ import CafChem.CafChemEleon as ccel
 import CafChem.CafChemSubs as ccs
 import CafChem.CafChemReDock as ccr
 import CafChem.CafChemBML as ccml
+import CafChem.CafChemFragGrow as ccfg
 ```
 ## CafChemGPT
 - Train a GPT on a SMILES dataset. Use the tools provided to generate novel molecules.
@@ -85,3 +87,6 @@ import CafChem.CafChemBML as ccml
 - Create a classifier model using HuggingFace.
 - Analyze data with confusion matrices.
 - Load datasets, add tokens, train, push all to the HuggingFace hub.
+## CafChemFragGrow
+- Explore a binding site with chemical fragments.
+- Various viewing options to probe the nature of the binding site.
