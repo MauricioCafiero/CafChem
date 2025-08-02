@@ -816,3 +816,69 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
 
   accuracy = number_correct/total_number
   return accuracy, img
+
+def ligand_relaxation(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
+                    charge: int, spin: int):
+  '''
+    retrieve a molecule from an SDF file, add protons, and calculate the energy
+    using Meta's UMA MLIP.
+    
+    Args:
+      filename_base: the SDF filename without the sdf extension
+      target: the target protein to dock in followed by _data
+      calculator: the FAIRCHEM calculator
+      charge: charge of the molecule
+      spin: spin multiplicity of the molecule
+    Returns:
+      strain: the ligand strain energy
+  '''
+  filename = filename_base + ".sdf"
+  suppl = Chem.SDMolSupplier(filename)
+
+  total_xyz_list = []
+  for mol in suppl:
+    '''
+    In most cases this loop will only be over one molecule.
+    adds protons to the structure and then makes and XYZ string, 
+    and an ASE atoms object.
+    '''
+    xyz_list = []
+    atoms_list = ""
+    template = mol
+    molH = Chem.AddHs(mol)
+    AllChem.ConstrainedEmbed(molH,template, useTethers=True)
+    xyz_string = f"{molH.GetNumAtoms()}\n\n"
+    for atom in molH.GetAtoms():
+      atoms_list += atom.GetSymbol()
+      pos = molH.GetConformer().GetAtomPosition(atom.GetIdx())
+      temp_tuple = (pos[0], pos[1], pos[2])
+      xyz_list.append(temp_tuple)
+      xyz_string += f"{atom.GetSymbol()} {pos[0]} {pos[1]} {pos[2]}\n"
+
+    '''
+      Put together atoms objects for the ligand and the protein. Combine them 
+      into a single ASE atoms object for the pl complex. Optimize the structure
+      and calculate the energy of the pl complex. Optimization uses a 
+      constraints list from the target object. Separate the optimized complex
+      into new ASE atoms objects for the ligand and the protein. Calculate the
+      energy of each.
+    '''
+    atoms = Atoms(atoms_list,xyz_list)     
+    atoms.info.update({"spin": spin, "charge": charge})
+    atoms.calc = calculator
+    bound_energy = atoms.get_potential_energy()
+    
+    dyn = BFGS(atoms)
+    dyn.run(fmax=0.05)
+    relaxed_energy = atoms.get_potential_energy()
+  
+    #calculate the strain energy
+    print("===========================================================")
+    strain = 23.06035*(bound_energy - relaxed_energy)
+    print(f"Strain energy is: {ie:.3f} kcal/mol")
+    
+    ase.io.write(f"{filename_base}_relaxed.xyz", images=atoms, format="xyz")
+
+    # Save the XYZ string(s) and pass back for visualization
+
+  return strain
