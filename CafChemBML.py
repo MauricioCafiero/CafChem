@@ -619,3 +619,115 @@ def predict_with_model(smiles_list: list, model, featurizer = "rdkit", scaler = 
   predictions = model.predict(final_f)
   
   return predictions
+
+def kmeans_loss(x_train: np.array, x_valid: np.array, y_train: np.array, y_valid: np.array, smiles_valid: list, 
+                train_preds: np.array, valid_preds: np.array, number_groups = 10, seed= 42, init = "k-means++"):
+  '''
+  Find k-means clusters for the given data.
+
+    Args:
+        x_train (np.array): Training data.
+        x_valid (np.array): Validation data.
+        y_train (np.array): Training labels.
+        y_valid (np.array): Validation labels.
+        smiles_valid (list): Validation SMILES.
+        train_preds (np.array): Training predictions.
+        valid_preds (np.array): Validation predictions.
+        number_groups (int, optional): Number of clusters. Defaults to 10.
+        seed (int, optional): Random seed. Defaults to 42.
+        init (str, optional): Initialization method. Defaults to "k-means++".
+
+    Returns:
+        df_val_list (list): List of dataframes for each validation cluster.
+        pics (list): List of images for each cluster.
+  ''' 
+  cluster = KMeans(n_clusters=number_groups, random_state = seed, n_init="auto",
+                   init = init)
+  model=cluster.fit(x_train)
+  train_labels = model.labels_
+  train_loss = np.abs(train_preds - y_train)
+
+  valid_labels = model.predict(x_valid)
+  valid_loss = np.abs(valid_preds - y_valid)
+
+  train_dict = {"Train truth": y_train, "Train preds": train_preds,
+                "Train loss": train_loss, "Train cluster": train_labels}
+  train_df = pd.DataFrame(train_dict)
+  train_df.to_csv("train_df.csv")
+  print(f"CSV for training set saved!")
+
+  valid_dict = {"Valid SMILES": smiles_valid, "Valid truth": y_valid, "Valid preds": valid_preds,
+                "Valid loss": valid_loss, "Valid cluster": valid_labels}
+  valid_df = pd.DataFrame(valid_dict)
+  valid_df.to_csv("valid_df.csv")
+  print(f"CSV for valiation set saved!")
+
+  group_names = []
+  df_val_list = []
+  df_train_list = []
+  for i in range(number_groups):
+      group_names.append(f"df_group{i}")
+
+  for i,name in enumerate(group_names):
+      name = valid_df[valid_df["Valid cluster"] == i]
+      df_val_list.append(name)
+  
+  for i,name in enumerate(group_names):
+      name = train_df[train_df["Train cluster"] == i]
+      df_train_list.append(name)
+
+  mean_loss = []
+  std_loss = []
+  max_loss = []
+  number_molecules = []
+  mean_train_loss = []
+  std_train_loss = []
+  max_train_loss = []
+  number_train_molecules = []
+  mols_total = []
+  smiles_total = []
+  loss_total = []
+
+  for group, val_dataframe, train_dataframe in zip(group_names,df_val_list,df_train_list):
+      df_temp = val_dataframe
+      mean_loss.append(df_temp["Valid loss"].mean())
+      std_loss.append(df_temp["Valid loss"].std())
+      max_loss.append(df_temp["Valid loss"].max())
+      number_molecules.append(len(df_temp))
+
+      df_train_temp = train_dataframe
+      mean_train_loss.append(df_train_temp["Train loss"].mean())
+      std_train_loss.append(df_train_temp["Train loss"].std())
+      max_train_loss.append(df_train_temp["Train loss"].max())
+      number_train_molecules.append(len(df_train_temp))
+      
+      df_temp.sort_values(by=["Valid loss"],inplace=True, ascending=False)
+     
+      mols = [Chem.MolFromSmiles(smile) for smile in df_temp["Valid SMILES"]]
+      mols_total.append(mols)
+      smiles = [smile for smile in df_temp["Valid SMILES"]]
+      losses = [loss for loss in df_temp["Valid loss"]]
+      loss_total.append(losses)
+      smiles_total.append(smiles)
+  
+  print(f"Type     Group Number   Number Molecules   Mean Loss   Std Loss   Max Loss")
+  for i in range(number_groups):
+      print(f"Train    {i:12} {number_train_molecules[i]:18} {mean_train_loss[i]:11.2f} {std_train_loss[i]:10.2f} {max_train_loss[i]:10.2f}")
+      print(f"Valid    {i:12} {number_molecules[i]:18} {mean_loss[i]:11.2f} {std_loss[i]:10.2f} {max_loss[i]:10.2f}")
+      delta = abs(mean_loss[i] - mean_train_loss[i])
+      blank = ""
+      print("-"*74)
+      print(f"{blank:42}\u0394    {delta:5.2f} ")
+      print("")
+
+  pics = []
+  for i in range(number_groups):
+      legends = [f"SMILES: {smile}, Loss: {loss:.2f}" for loss, smile in zip(loss_total[i], smiles_total[i])]
+      try:
+        img = MolsToGridImage(mols_total[i], legends = legends, molsPerRow=2, subImgSize=(300,300))
+        pics.append(img)
+      except:
+        print(f"Error with group {i}")
+        pics.append(None)
+        
+  return df_val_list, pics
