@@ -875,10 +875,11 @@ def ligand_relaxation(filename_base: str, target_obj: str, calculator: FAIRChemC
     #calculate the strain energy
     print("===========================================================")
     strain = 23.06035*(bound_energy - relaxed_energy)
-    print(f"Strain energy is: {ie:.3f} kcal/mol")
+    print(f"Strain energy is: {strain:.3f} kcal/mol")
     
     ase.io.write(f"{filename_base}_relaxed.xyz", images=atoms, format="xyz")
 
     # Save the XYZ string(s) and pass back for visualization
 
   return strain
+
