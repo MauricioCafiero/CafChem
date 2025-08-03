@@ -24,6 +24,7 @@ from sklearn.metrics import r2_score
 import mordred
 import deepchem as dc
 import pickle
+from rdkit.Chem.rdFMCS import FindMCS
 
 def smiles_to_canon(smiles: str):
   '''
@@ -731,3 +732,112 @@ def kmeans_loss(x_train: np.array, x_valid: np.array, y_train: np.array, y_valid
         pics.append(None)
         
   return df_val_list, pics
+ 
+ def find_fragment(mol_list: list, threshold: float):
+  '''
+    Finds the most common fragment in a list of molecules, based on a particular threshold
+    of molecules that must have the fragment, i.e., the fragment only has to appear in 
+    threshold % of the list of molecules.
+
+      Args:
+        mol_list: mol objects to analyze
+        threshold: minimum threshold for the analysis
+      Returns:
+        mcs.querymol: the found fragment
+        frac_with_frag: fraction of molecules that have the fragment
+        matching_mols: list of molecules that have the fragment
+        matching_smiles: list of SMILES for the molecules that have the fragment
+  '''
+  params = Chem.rdFMCS.MCSParameters()
+  params.Threshold = threshold
+  params.BondCompareParameters.CompleteRingsOnly=True
+  params.AtomCompareParameters.CompleteRingsOnly=True
+  
+  mcs = FindMCS(mol_list,params)
+  
+  mcfrag = mcs.queryMol
+  mcsmiles = Chem.MolToSmiles(mcfrag)
+  
+  matching_mols = []
+  matching_smiles = []
+  no_match = 0
+  for m in mol_list:
+    match_found = m.HasSubstructMatch(mcs.queryMol)
+    if match_found:
+      matching_mols.append(m)
+      matching_smiles.append(Chem.MolToSmiles(m))
+    else:
+      no_match += 1
+
+  print(f"Could not match {no_match} molecules to the fragment")
+  print(f"Found {len(mol_list) - no_match} molecules containing the fragment")
+  frac_with_frag = (len(mol_list) - no_match) / len(mol_list)
+  print(f"Fraction of molecules with fragment: {frac_with_frag:.3f}")
+  print(f"Fragment SMILES: {mcsmiles}")
+  print("\n\n")
+
+  return mcs.queryMol, frac_with_frag, matching_mols, matching_smiles
+
+def get_common_fragment(smiles_list: list, min_threshold: float, which_result = 0):
+  '''
+    Finds the most common fragment in a list of smiles, based on a particular threshold
+    of molecules that must have the fragment, i.e., the fragment only has to appear in 
+    threshold % of the list of molecules.
+
+      Args:
+        smiles_list: SMILES to analyze
+        min_threshold: minimum threshold to start the analysis
+        which_result: 0 --> longest fragement, 1 --> second longest fragment, etc
+      Returns:
+        img: image of the molecules that match the fragment
+        mcsmiles: SMILES for the fragment
+        frac_with_frag: fraction of molecules that have the fragment
+  '''
+
+  mol_list = [Chem.MolFromSmiles(x) for x in smiles_list]
+  
+  threshold = min_threshold
+  fracs = []
+  frags = []
+  total_matching_mols = []
+  total_matching_smiles = []
+
+  while threshold <= 1:
+    print(f"Threshold: {threshold:.3f}")
+    mcfrag, frac_with_frag, matching_mols, matching_smiles = find_fragment(mol_list, threshold)
+    fracs.append(frac_with_frag)
+    frags.append(mcfrag)
+    total_matching_mols.append(matching_mols)
+    total_matching_smiles.append(matching_smiles)
+    threshold += 0.05
+    if frac_with_frag >= 0.9:
+      break
+
+  lengths = []
+  for frag in frags:
+    smile = Chem.MolToSmiles(frag)
+    lengths.append(len(smile))
+  
+  original_lengths = lengths.copy()
+  lengths.sort(reverse=True)
+  desired_length = lengths[which_result]
+  desired_idx = original_lengths.index(desired_length) 
+
+  mcsmiles = Chem.MolToSmiles(frags[desired_idx])
+  mcfrag = frags[desired_idx]
+  matching_mols = total_matching_mols[desired_idx]
+  matching_smiles = total_matching_smiles[desired_idx]
+  frac_with_frag = fracs[desired_idx]
+
+  subst = mcfrag
+  AllChem.Compute2DCoords(mcfrag)
+
+  [AllChem.GenerateDepictionMatching2DStructure(m,mcfrag) for m in matching_mols]
+
+  img = MolsToGridImage(matching_mols,
+                  highlightAtomLists=[m.GetSubstructMatch(subst) for m in matching_mols],
+                  legends = matching_smiles, molsPerRow=5,useSVG=False)
+  
+  print("Fragment analysis complete.")
+
+  return img, mcsmiles, frac_with_frag
