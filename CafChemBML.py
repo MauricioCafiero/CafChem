@@ -733,7 +733,7 @@ def kmeans_loss(x_train: np.array, x_valid: np.array, y_train: np.array, y_valid
         
   return df_val_list, pics
  
-  def find_fragment(mol_list: list, threshold: float):
+def find_fragment(mol_list: list, threshold: float):
   '''
     Finds the most common fragment in a list of molecules, based on a particular threshold
     of molecules that must have the fragment, i.e., the fragment only has to appear in 
@@ -842,3 +842,4 @@ def get_common_fragment(smiles_list: list, min_threshold: float, which_result = 
 
 
   return img, mcsmiles, frac_with_frag
+
