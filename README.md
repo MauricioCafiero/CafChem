@@ -60,6 +60,7 @@ import CafChem.CafChemFragGrow as ccfg
 ## CafChemSubs
 - generate analogues of a molecule (from SMILES strings) using generative mask-filling and/or substitutions on phenyl rings.
 - Can also calculate some properties (QED, etc) related to drug design.
+- Calculate Tanimoto similarities based on Fingerprints between molecules in a list and molecules against a known active.
 - visualize molecules. 
 ## CafChemReDock
 - dock molecular SMILES strings in a protein using DockString and save poses.
