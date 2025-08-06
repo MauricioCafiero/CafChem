@@ -108,6 +108,12 @@ class MLP_Model(nn.Module):
         nn.Linear(self.neurons, self.neurons),
         nn.ReLU6())
     self.linear_output = nn.Linear(self.neurons, 1)
+    
+    f = open("MLP_model_params.txt","w")
+    f.write(f"neurons: {self.neurons}\n")
+    f.write(f"input_dims: {self.input_dims}\n")
+    f.write(f"num_hidden_layers: {self.num_hidden_layers}")
+    f.close()
 
   def forward(self, x):
     '''
@@ -280,3 +286,26 @@ def create_data_loader(X_train, y_train, X_test, y_test, batch_size: int, shuffl
   test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
   return train_dataset, test_dataset, train_loader, test_loader
+ 
+def load_model():
+   '''
+    Loads a PyTorch model from a text file containing the model parameters
+    and a .pt file containing the model weights.
+
+    Args:
+      None
+    Returns:  
+      model: The loaded PyTorch model.
+   '''
+   f = open("MLP_model_params.txt","r")
+   lines = f.readlines()
+   f.close()
+   
+   neurons = lines[0].split()[1]
+   input_dims = lines[1].split()[1]
+   num_hidden_layers = lines[2].split()[1]
+
+   model = ccmlp.MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers))
+   model.load_state_dict(torch.load("saved_model.pt",weights_only=True))
+
+   return model
