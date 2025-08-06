@@ -305,7 +305,7 @@ def load_model():
    input_dims = lines[1].split()[1]
    num_hidden_layers = lines[2].split()[1]
 
-   model = ccmlp.MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers))
+   model = MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers))
    model.load_state_dict(torch.load("saved_model.pt",weights_only=True))
 
    return model
