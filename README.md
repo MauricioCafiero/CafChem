@@ -14,6 +14,9 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
+- [Grow Fragments in a Binding Site](#cafchemfraggrow)<br>
+- [MLP with PyTorch](#cafchemmlppytorch) <br>
+
 
 The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
 
@@ -35,6 +38,8 @@ import CafChem.CafChemEleon as ccel
 import CafChem.CafChemSubs as ccs
 import CafChem.CafChemReDock as ccr
 import CafChem.CafChemBML as ccml
+import CafChem.CafChemFragGrow as ccfg
+import CafChem.CafChemMLPPyTorch as ccmlp
 ```
 ## CafChemGPT
 - Train a GPT on a SMILES dataset. Use the tools provided to generate novel molecules.
@@ -58,6 +63,7 @@ import CafChem.CafChemBML as ccml
 ## CafChemSubs
 - generate analogues of a molecule (from SMILES strings) using generative mask-filling and/or substitutions on phenyl rings.
 - Can also calculate some properties (QED, etc) related to drug design.
+- Calculate Tanimoto similarities based on Fingerprints between molecules in a list and molecules against a known active.
 - visualize molecules. 
 ## CafChemReDock
 - dock molecular SMILES strings in a protein using DockString and save poses.
@@ -85,3 +91,10 @@ import CafChem.CafChemBML as ccml
 - Create a classifier model using HuggingFace.
 - Analyze data with confusion matrices.
 - Load datasets, add tokens, train, push all to the HuggingFace hub.
+## CafChemFragGrow
+- Explore a binding site with chemical fragments.
+- Various viewing options to probe the nature of the binding site.
+## CafChemMLPPyTorch
+- Featurize a dataset and
+- Train an MLP using Pytorch.
+- Evaluate, predict with, save and load models.
