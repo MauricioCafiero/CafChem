@@ -767,7 +767,7 @@ def xyz_to_sdf(xyz_file: str, sdf_file = None):
   writer.write(mol)
   writer.close()
 
-def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
+def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int, asc_flag: bool):
   '''
     rescores variables, compares rankings of different variables and returns accuracy, produces image of ranked molecules.
     Args: 
@@ -784,7 +784,7 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int ):
   ref_list = df[ref_col].to_list() 
   smiles_list = df["smiles"].to_list()
 
-  df.sort_values(by=[comp_col], inplace=True)
+  df.sort_values(by=[comp_col], ascending=asc_flag, inplace=True)
   new_list = df["smiles"].to_list() 
   number_correct = 0
 
@@ -882,4 +882,5 @@ def ligand_relaxation(filename_base: str, target_obj: str, calculator: FAIRChemC
     # Save the XYZ string(s) and pass back for visualization
 
   return strain
+
 
