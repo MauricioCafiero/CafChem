@@ -1,4 +1,9 @@
 # CafChem
+
+- See the list of [commonly used Python code snippets](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
+- See the guide to [using various python packages on RACC2](https://github.com/MauricioCafiero/CafChem/blob/main/run_python_racc.md).
+- The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library.
+
 Libraries/modules for the CafChem tools for computational chemistry/drug design. Modules include:
 
 - [Train a GPT and generate novel molecules](#cafchemgpt) <br>
@@ -16,11 +21,6 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
 - [Grow Fragments in a Binding Site](#cafchemfraggrow)<br>
 - [MLP with PyTorch](#cafchemmlppytorch) <br>
-
-
-The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library
-
-also see the list of [commonly used Python code snippets](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
 
 ## Install:
 ```
