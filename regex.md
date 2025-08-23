@@ -179,4 +179,4 @@ print(z)
 >> ['0.0', '0.0']
 >> ['1.4', '0.0']
 ```
-First we checked for a match. In order to capture any coordinates, we specified the line has to start with a non-number, followed by a possible second non-number (element names, 1-2 letters). Then a space, and then 1-2 numbers, a full stop, and and number of numbers following the decimal. This pattern is then repeated twice more with a space in between.
+First we checked for a match. In order to capture any coordinates, we specified the line has to start with a non-number, followed by a possible second non-number (element names, 1-2 letters). Then a space, and then 1-2 numbers, a full stop, and any number of numbers following the decimal. This pattern is then repeated twice more with a space in between.
