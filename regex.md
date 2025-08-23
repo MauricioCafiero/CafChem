@@ -88,4 +88,6 @@ for i,line in enumerate(lines):
 >>Match found in line 8
 ```
 By specifying we wanted the begining of the line, we got it. 
+- In each case we got a match object. 
+
 - Lets look for wB97XD so we can replace it with B3LYP:
