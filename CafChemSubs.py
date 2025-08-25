@@ -298,19 +298,55 @@ def validate_smiles(in_smiles, in_entropy):
     
   return unique_smiles,unique_entropies
 
-def calc_qed(smiles):
+def calc_qed(smiles, lip_props = False):
   '''
   Takes a list of SMILES strings and calculates the QED value for each molecule.
   A value of 1.0 is perfect drug-likeness, and a value of 0.0 is not drug-like.
 
-    Args: smiles: a list of SMILES strings
+    Args: 
+      smiles: a list of SMILES strings
+      lip_props: Whether or not to calculate the lipinski properties
 
     Returns:
       qed: a list of the QED values of each generated molecule.
       mols: a list of the molecule objects corresponding to each generated molecule.
+      If lip_props is True, then:
+        Molecular_weight: a list of the molecular weights of each generated molecule.
+        aLogP: a list of the logP values of each generated molecule.
+        Hydrogen_bond_acceptors: a list of the number of hydrogen bond acceptors of each generated molecule.
+        Hydrogen_bond_donors: a list of the number of hydrogen bond donors of each generated molecule.
+        Polar_surface_area: a list of the polar surface area of each generated molecule.
+        Rotatable_Bonds: a list of the number of rotatable bonds of each generated molecule.
+        Aromatic_Rings: a list of the number of aromatic rings of each generated molecule.
+        Undesireable_moieties: a list of the number of undesireable moieties of each generated molecule.
   '''
   mols = [Chem.MolFromSmiles(smile) for smile in smiles]
   qed = [Chem.QED.default(mol) for mol in mols]
+  
+  
+  if lip_props:
+    Molecular_weight = []
+    aLogP = []
+    Hydrogen_bond_acceptors = []
+    Hydrogen_bond_donors = []
+    Polar_surface_area = []
+    Rotatable_Bonds = []
+    Aromatic_Rings = []
+    Undesireable_moieties = []
+    for mol in mols:
+      p = Chem.QED.properties(mol)
+      Molecular_weight.append(p[0])
+      aLogP.append(p[1])
+      Hydrogen_bond_acceptors.append(p[2])
+      Hydrogen_bond_donors.append(p[3])
+      Polar_surface_area.append(p[4])
+      Rotatable_Bonds.append(p[5])
+      Aromatic_Rings.append(p[6])
+      Undesireable_moieties.append(p[7])
+    
+    return qed, mols, Molecular_weight, aLogP, Hydrogen_bond_acceptors, Hydrogen_bond_donors,\
+           Polar_surface_area, Rotatable_Bonds, Aromatic_Rings, Undesireable_moieties
+  
   return qed,mols
 
 def gen_mask(smile_in: str, percent_masked: float) -> str:
