@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import deepchem as dc
 import time
+import random
 import transformers
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
@@ -688,5 +689,6 @@ def gen_mols(prompts: list, use_ramp: bool, model, tokenizer, TEMP: float, VOCAB
 
   img = Draw.MolsToGridImage(final_mols,molsPerRow=3,legends=final_smiles)
   return img, final_smiles  
+
 
 
