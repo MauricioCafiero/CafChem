@@ -76,6 +76,14 @@ class chemprop_data():
 
   def featurize_dataloaders(self):
     '''
+      featurizes the data and creates dataloaders for training, validation, and testing.
+        Args:
+          None
+        Returns:
+          scaler: a standard scaler for the targets
+          train_loader: training dataloader
+          val_loader: validation dataloader
+          test_loader: testing dataloader
     '''
     featurizer = featurizers.SimpleMoleculeMolGraphFeaturizer()
 
@@ -97,6 +105,15 @@ class chemprop_data():
 
   def get_full_dsets(self):
     '''
+      returns the full training, validation, and testing datasets, expanded from the batches
+
+      Args:
+        None
+
+      Returns:
+        full_train: full training dataset
+        full_val: full validation dataset
+        full_test: full testing dataset
     '''
 
     full_test = []
@@ -115,6 +132,16 @@ class chemprop_data():
 
   def make_new_dataloader(self, new_df, smiles_column, target_columns = None, log_flag = False):
     '''
+      creates a new dataloader from a new dataframe
+
+      Args:
+        new_df: new dataframe
+        smiles_column: the name of the SMILES column
+        target_columns: (optiona) the names of the target columns
+        log_flag: a flag to apply a log to the target values
+
+      Returns:
+        new_loader: new dataloader
     '''
     smis = new_df.loc[:, smiles_column].values
 
@@ -141,6 +168,14 @@ class chemprop_model():
   '''
   def __init__(self, mess_pass = "bond", aggre = "mean", batch_norm = True):
     '''
+      initializes the Chemprop model class. This is a GNN based MPNN model.
+
+      Args:
+        mess_pass: type of message passing to use
+        aggre: type of aggregation to use
+        batch_norm: a flag to use batch normalization
+      Returns:
+        None
     '''
     self.mess_pass = mess_pass
     self.aggre = aggre
@@ -197,6 +232,16 @@ class chemprop_model():
 
   def train_model(self, train_loader, val_loader, epochs = 100, devices = 1):
     '''
+      trains the model
+
+      Args:
+        train_loader: training dataloader
+        val_loader: validation dataloader
+        epochs: number of epochs to train for
+        devices: number of devices to use
+
+      Returns:
+        trainer: trained model
     '''
     checkpointing = ModelCheckpoint("checkpoints", "best-{epoch}-{val_loss:.2f}",
                                     "val_loss", mode="min",save_last=True)
@@ -217,6 +262,13 @@ class chemprop_model():
 
   def test_model(self, test_loader):
     '''
+      tests the model
+
+      Args:
+        test_loader: testing dataloader
+
+      Returns:
+        results: results of testing
     '''
     results = self.trainer.test(dataloaders=test_loader)
 
@@ -224,6 +276,13 @@ class chemprop_model():
 
   def get_test_preds(self, trial_loader):
     '''
+      gets the predictions for the test set/ run Inference
+
+      Args:
+        trial_loader: testing dataloader
+
+      Returns:
+        trial_preds: predictions for the test set
     '''
     with torch.inference_mode():
       inftrainer = pl.Trainer(
@@ -243,6 +302,15 @@ class chemprop_model():
 
   def r2_scores(self, full_test, test_loader):
     '''
+      calculates the R2 score for the test set
+
+      Args:
+        full_test: full testing dataset
+        test_loader: testing dataloader
+
+      Returns:
+        test_r2: R2 score for the test set
+        also plots the data
     '''
     test_preds = self.get_test_preds(test_loader)
 
@@ -259,6 +327,13 @@ class chemprop_model():
 
   def save_model(self, saved_model_path):
     '''
+      saves the model to a file
+
+      Args:
+        saved_model_path: path to save the model to
+
+      Returns:
+        None
     '''
     saved_model = Path(saved_model_path)
 
@@ -269,6 +344,13 @@ class chemprop_model():
 
   def load_model(self, saved_model_path):
     '''
+      loads the model from a file
+
+      Args:
+        saved_model_path: path to load the model from
+
+      Returns:
+        model: loaded model
     '''
     saved_model = Path(saved_model_path)
     model = MPNN.load_from_file(saved_model)
