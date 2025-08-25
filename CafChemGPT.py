@@ -579,4 +579,34 @@ def load_foundation():
   print("Foundation model loaded.")
   gpt_load.summary()
 
+
   return gpt_load
+  
+def make_prompts(num_prompts: int, prompt_length: int):
+  '''
+    Tokenizes a dataset and returns the input and target arrays.
+
+      Args:
+        num_prompts: now many prompts to make_datasets
+        prompt_length: how many tokens in the prompt
+      Returns:
+        prompts: a list of prompts
+  '''
+  df = pd.read_csv("CafChem/data/ZN305K_smiles.csv")
+
+  Xa = []
+  for smiles in df["SMILES"]:
+    smiles = smiles.replace("[Na+].","").replace("[Cl-].","").replace(".[Cl-]","").replace(".[Na+]","")
+    smiles = smiles.replace("[K+].","").replace("[Br-].","").replace(".[K+]","").replace(".[Br-]","")
+    smiles = smiles.replace("[I-].","").replace(".[I-]","").replace("[Ca2+].","").replace(".[Ca2+]","")
+    Xa.append(smiles)
+
+
+  raw_prompts = random.choices(Xa,k=num_prompts)
+  
+  prompts = []
+  for smile in raw_prompts:
+    prompts.append(smile[:prompt_length])
+
+  return prompts
+
