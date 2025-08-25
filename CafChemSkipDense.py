@@ -493,6 +493,7 @@ class skipdense_model():
     f.write(f"epochs: {self.epochs}\n")
     f.write(f"batch_size: {self.batch_size}\n")
     f.write(f"num_blocks: {self.num_blocks}\n")
+    f.write(f"wide: {self.wide}\n")
     f.write(f"skip: {self.skip}\n")
     f.write(f"classifier_flag: {self.classifier_flag}\n")
     f.write(f"num_classes: {self.num_classes}\n")
@@ -524,7 +525,14 @@ def load_model(model_name: str, X_train):
   epochs = int(params[5].split(":")[1])
   batch_size = int(params[6].split(":")[1])
   num_blocks = int(params[7].split(":")[1])
-  bool_line = params[8].split(":")[1].strip().strip("[]")
+  wide_raw = params[8].split(":")[1].strip().replace("\n","")
+  if wide_raw == "True":
+    wide = True
+  elif wide_raw == "False":
+    wide = False
+  else:
+    raise ValueError("wide must be True or False")
+  bool_line = params[9].split(":")[1].strip().strip("[]")
   bools = bool_line.split(",")
   skip = []
   for bool in bools:
@@ -534,7 +542,7 @@ def load_model(model_name: str, X_train):
       skip.append(False)
     else:
       pass
-  classifier_raw = params[9].split(":")[1].strip().replace("\n","")
+  classifier_raw = params[10].split(":")[1].strip().replace("\n","")
   if classifier_raw == "True":
     classifier_flag = True
   elif classifier_raw == "False":
@@ -542,13 +550,13 @@ def load_model(model_name: str, X_train):
   else:
     raise ValueError("classifier_flag must be True or False")
   try:
-    num_classes = int(params[10].split(":")[1])
+    num_classes = int(params[11].split(":")[1])
   except:
     num_classes = None
 
   new_model = skipdense_model(ntlu=ntlu, act=act, lrate=lrate, alpha=alpha, layers=layers,
                               epochs=epochs, batch_size=batch_size, num_blocks=num_blocks,
-                              skip=skip)
+                              wide=wide, skip=skip)
   model = new_model.build_model(X_train)
   model.load_weights(f"{model_name}.weights.h5")
 
