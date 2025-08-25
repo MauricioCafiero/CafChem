@@ -1,9 +1,9 @@
 # CafChem
 
-- See the list of [commonly used Python code snippets](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
-- See the guide to [using various python packages on RACC2](https://github.com/MauricioCafiero/CafChem/blob/main/run_python_racc.md).
+- See the [list of commonly used Python techniques](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
+- See the [guide to using various python packages on RACC2](https://github.com/MauricioCafiero/CafChem/blob/main/run_python_racc.md).
 - See the [primer on regular expressions](https://github.com/MauricioCafiero/CafChem/blob/main/regex.md).
-- The [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) contains Colab notebooks to demonstrate each CafChem library.
+- See the [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) which contains Colab notebooks to demonstrate each CafChem library.
 
 Libraries/modules for the CafChem tools for computational chemistry/drug design. Modules include:
 
@@ -16,6 +16,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
 - [Basic machine learning and cleaning ChEMBL CSV files](#cafchembml) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+- [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
@@ -30,12 +31,12 @@ git clone https://github.com/MauricioCafiero/CafChem.git
 import CafChem.CafChemGPT as ccgpt
 import CafChem.CafChemRNN as ccrnn
 import CafChem.CafChemTxGemma as cctxg
-import CafChem.CafChemGPTINF as ccinf
 import CafChemSkipDense as ccsd
 import CafChem.CafChemHFClassifier as cchf
 import CafChem.CafChemBoltz as ccb
 import CafChem.CafChemQM_UMA as ccqm
 import CafChem.CafChemEleon as ccel
+import CafChem.CafChemProp as ccp
 import CafChem.CafChemSubs as ccs
 import CafChem.CafChemReDock as ccr
 import CafChem.CafChemBML as ccml
@@ -80,6 +81,9 @@ import CafChem.CafChemMLPPyTorch as ccmlp
 ## CafChemBoltz
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
+## CafChemProp
+- Train the [Chemprop](https://github.com/chemprop) GNN-based MPNN model.
+- save and load trained models and analyze data.
 ## CafChemEleon
 - finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
 - save and load trained models and analyze data.
