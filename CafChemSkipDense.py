@@ -292,7 +292,7 @@ class skipdense_model():
     Defines the skipdense model.
   '''
   def __init__(self, ntlu = 100, act= "relu", lrate = 0.002, alpha = 0.001, layers = 4, 
-               epochs = 50, batch_size = 64, num_blocks = 2, skip = [False, False],
+               epochs = 50, batch_size = 64, num_blocks = 2, wide = False, skip = [False, False],
                classifier_flag = False, num_classes = None):
     '''
       Reads in parameters for the model.
@@ -306,6 +306,7 @@ class skipdense_model():
           epochs: number of epochs
           batch_size: batch size
           num_blocks: number of blocks
+          wide: boolean for doing a parallel stack
           skip: boolean for using skip connections
           classifier_flag: boolean for using classifier
           num_classes: number of classes
@@ -320,9 +321,11 @@ class skipdense_model():
     self.epochs = epochs
     self.batch_size = batch_size
     self.num_blocks = num_blocks
+    self.wide = wide
     self.skip = skip
     self.classifier_flag = classifier_flag
     self.num_classes = num_classes
+    self.cat = tf.keras.layers.Concatenate()
 
     print("skipdense model initialized!")
   
@@ -346,11 +349,27 @@ class skipdense_model():
   
     input_ = tf.keras.layers.Input(shape=X_train.shape[1:])
     norm_layer = tf.keras.layers.Normalization()(input_)
+    
+    # single pass through a stack of skip-dense blocks
     x = SkipDenseBlock(N_LAYERS = self.layers, N_NEURONS = self.ntlu, ACTIVATION = self.act, 
                        L2REG = self.alpha, SKIP = self.skip[0])(norm_layer) #(input_)
+    
     for i in range(self.num_blocks - 1):
       x = SkipDenseBlock(N_LAYERS = self.layers, N_NEURONS = self.ntlu, ACTIVATION = self.act, 
                          L2REG = self.alpha, SKIP = self.skip[i])(x)
+    
+    # possible second stack of skip-dense blocks
+    if self.wide:
+      y = SkipDenseBlock(N_LAYERS = self.layers, N_NEURONS = self.ntlu, ACTIVATION = self.act, 
+                         L2REG = self.alpha, SKIP = self.skip[0])(norm_layer) #(input_)
+    
+      for i in range(self.num_blocks - 1):
+        y = SkipDenseBlock(N_LAYERS = self.layers, N_NEURONS = self.ntlu, ACTIVATION = self.act, 
+                           L2REG = self.alpha, SKIP = self.skip[i])(y)
+                         
+      combined = self.cat([x,y])
+      x = combined
+    
     if self.classifier_flag == True:
       output_ = tf.keras.layers.Dense(self.num_classes, activation="softmax")(x)
     else:
