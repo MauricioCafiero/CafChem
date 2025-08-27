@@ -342,8 +342,8 @@ class prep_data():
     self.X_test = torch.tensor(self.X_test, dtype=torch.float32)
     self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
 
-    train_dataset = TensorDataset(X_train, y_train)
-    test_dataset = TensorDataset(X_test, y_test)
+    train_dataset = TensorDataset(self.X_train, self.y_train)
+    test_dataset = TensorDataset(self.X_test, self.y_test)
 
     train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=self.shuffle)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
