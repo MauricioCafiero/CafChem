@@ -321,7 +321,7 @@ class prep_data():
     self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X_scaled, y, 
                                        test_size=test_size, random_state=random_state)
     
-    return X_train, X_test, y_train, y_test
+    return self.X_train, self.X_test, self.y_train, self.y_test
     
   def create_data_loader(self):
     '''
