@@ -182,7 +182,7 @@ def train(dataloader, model, loss_fn, optimizer, classifier_flag=False, num_clas
     optimizer.zero_grad()
 
     pred = model(X)
-    loss = loss_fn(pred, y.view(-1,num_classes))
+    loss = loss_fn(pred, y.view(-1,1))
     total_loss += loss
 
     loss.backward()
@@ -336,8 +336,7 @@ class prep_data():
         train_loader: training data loader
         test_loader: test data loader
     '''
-    self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
-    self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
+    
     self.X_train = torch.tensor(self.X_train, dtype=torch.float32)
     self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
     self.X_test = torch.tensor(self.X_test, dtype=torch.float32)
