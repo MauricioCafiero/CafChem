@@ -14,7 +14,7 @@ import mordred
 import deepchem as dc
 
 def featurize(smiles_list: list, y: list,
-              ions_to_clean = ["[Na+].", ".[Na+]"], featurizer = "rdkit"):
+              ions_to_clean = ["[Na+].", ".[Na+]"], featurizer = "rdkit", classifier_flag = False):
   '''
   featurize a list of SMILES using RDKit or Mordred, clean counterions, 
   and remove NANs. treats target list as well so values returned match
@@ -24,6 +24,7 @@ def featurize(smiles_list: list, y: list,
     target_list: list of target values
     ions_to_clean: list of ions to remove from SMILES
     featurizer: "rdkit" or "mordred"
+    classifier_flag: boolean to use classifier
   Returns:
     X: list of feature vectors
     y: list of target values
@@ -84,8 +85,17 @@ def featurize(smiles_list: list, y: list,
               if i not in bad_rows:
                   print(f"Row {i} has a NaN.")
                   bad_rows.append(i)
+  
+  if classifier_flag == True:
+    num_cats = len(set(y))
+    y_cats = np.zeros((len(y),num_cats))
+    for i, val in enumerate(y):
+      y_cats[i,int(val)] = 1
 
-  return f, y, Xa
+    return f, y_cats, Xa
+  
+  else:
+    return f, y, Xa
 
 class MLP_Model(nn.Module):
   '''
@@ -94,12 +104,16 @@ class MLP_Model(nn.Module):
       neurons: number of neurons in each hidden layer
       input_dims: number of input dimensions
       num_hidden_layers: number of hidden layers
+      classifier_flag: Boolean to perform classification
   '''
-  def __init__(self, neurons: int, input_dims: int, num_hidden_layers: int):
+  def __init__(self, neurons: int, input_dims: int, num_hidden_layers: int, 
+               classifier_flag=False, num_classes = None):
     super(MLP_Model, self).__init__()
     self.neurons = neurons
     self.input_dims = input_dims
     self.num_hidden_layers = num_hidden_layers
+    self.classifier_flag = classifier_flag
+    self.num_classes = num_classes
     self.batchnorm = nn.BatchNorm1d(self.input_dims)
     self.linear_input = nn.Sequential(
         nn.Linear(self.input_dims, self.neurons),
@@ -108,11 +122,15 @@ class MLP_Model(nn.Module):
         nn.Linear(self.neurons, self.neurons),
         nn.ReLU6())
     self.linear_output = nn.Linear(self.neurons, 1)
+    self.linear_class_out = nn.Linear(self.neurons, self.num_classes)
+    self.classifier_output = nn.LogSoftmax()
     
     f = open("MLP_model_params.txt","w")
     f.write(f"neurons: {self.neurons}\n")
     f.write(f"input_dims: {self.input_dims}\n")
     f.write(f"num_hidden_layers: {self.num_hidden_layers}")
+    f.write(f"classifier_flag: {self.classifier_flag}")
+    f.write(f"num_classes: {self.num_classes}")
     f.close()
 
   def forward(self, x):
@@ -129,10 +147,16 @@ class MLP_Model(nn.Module):
     x = self.linear_input(x)
     for i in range(self.num_hidden_layers):
       x = self.linear_relu6(x)
-    output = self.linear_output(x)
+    
+    if classifier_flag == False:
+      output = self.linear_output(x)
+    else:
+      x = self.linear_class_out(x)
+      output = self.classifier_output
+      
     return output
 
-def train(dataloader, model, loss_fn, optimizer):
+def train(dataloader, model, loss_fn, optimizer, classifier_flag=False, num_classes = 1):
   '''
     Trains the model for one epoch.
 
@@ -141,9 +165,13 @@ def train(dataloader, model, loss_fn, optimizer):
       model: model to train
       loss_fn: loss function to use
       optimizer: optimizer to use
+      classifier_flag: Boolean to perform classification
     Returns:
       model: trained model
   '''
+  if classifier_flag == False:
+    num_classes = 1
+  
   size = len(dataloader.dataset)
   model.train()
 
@@ -153,7 +181,7 @@ def train(dataloader, model, loss_fn, optimizer):
     optimizer.zero_grad()
 
     pred = model(X)
-    loss = loss_fn(pred, y.view(-1,1))
+    loss = loss_fn(pred, y.view(-1,num_classes))
     total_loss += loss
 
     loss.backward()
@@ -166,7 +194,7 @@ def train(dataloader, model, loss_fn, optimizer):
 
   return model
 
-def evaluate_training(X_train, y_train, X_test, y_test, model):
+def evaluate_regression(X_train, y_train, X_test, y_test, model):
   '''
     Evaluates the model on the training and test data.
 
@@ -255,37 +283,133 @@ def predict_single_value(smiles_to_predict: str, model, featurizer = "rdkit",
   print(plot_text)
   return prediction
 
-def create_data_loader(X_train, y_train, X_test, y_test, batch_size: int, shuffle = True):
+class prep_data():
   '''
-    Creates a data loader for the training and test data.
-
-    Args:
-      X_train: training data
-      y_train: training truths
-      X_test: test data
-      y_test: test truths
-      batch_size: batch size for the data loader
-      shuffle: whether to shuffle the training data
-    Returns:
-      train_dataset: training dataset
-      test_dataset: test dataset
-      train_loader: training data loader
-      test_loader: test data loader
+  Data class to prepare raw data for model
   '''
-  y_train = list(y_train)
-  y_test = list(y_test)
-  X_train = torch.tensor(X_train, dtype=torch.float32)
-  y_train = torch.tensor(y_train, dtype=torch.float32)
-  X_test = torch.tensor(X_test, dtype=torch.float32)
-  y_test = torch.tensor(y_test, dtype=torch.float32)
+  def __init__(self, batch_size: int, shuffle = True):
+    '''
+        Sets up data prep parameters.
+        
+        Args:
+            batch_size: batch size for training / data loader
+            shuffle: Boolean to shuffle training set
+    '''
+    self.batch_size = batch_size
+    self.shuffle = shuffle
+    
+    print("prep data class initialized!")
+  
+  def scale_split(self, X, y, test_size=0.2, random_state=32):
+    '''
+        apply standard scaler and split the dataset
+        
+        Args:
+            X: features array
+            y: target array
+            test_size = fraction to use for test set
+            random_state = random number initializer
+        Returns:
+            X_train: training data
+            y_train: training truths
+            X_test: test data
+            y_test: test truths     
+    '''
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X_scaled, y, 
+                                       test_size=test_size, random_state=random_state)
+    
+    return X_train, X_test, y_train, y_test
+    
+  def create_data_loader(self):
+    '''
+      Creates a data loader for the training and test data.
 
-  train_dataset = TensorDataset(X_train, y_train)
-  test_dataset = TensorDataset(X_test, y_test)
+      Args: 
+        None
+      Returns:
+        train_dataset: training dataset
+        test_dataset: test dataset
+        train_loader: training data loader
+        test_loader: test data loader
+    '''
+    self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
+    self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
+    self.X_train = torch.tensor(self.X_train, dtype=torch.float32)
+    self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
+    self.X_test = torch.tensor(self.X_test, dtype=torch.float32)
+    self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
 
-  train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
-  test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_dataset = TensorDataset(X_train, y_train)
+    test_dataset = TensorDataset(X_test, y_test)
 
-  return train_dataset, test_dataset, train_loader, test_loader
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_dataset, test_dataset, train_loader, test_loader
+
+def make_classes(filename: str, target_name: str, num_classes: int):
+  '''
+    Takes a CSV files with a SMILES column and a target column, divides it into the
+    requested number of classes, sets the boundaries for thise classes, and assigns each 
+    datapoint to a class. Returns a dataframe with an additional column containing the 
+    classes. Also cleans ions from the SMILES strings.
+
+      Args:
+        filename: name of the CSV file
+        target_name: name of the target column
+        num_classes: number of classes to divide the data into
+      Returns:
+        df: dataframe with the classes
+  '''
+  df = pd.read_csv(filename)
+  df.sort_values(by=[target_name],inplace=True)
+
+  total_samples = len(df)
+  samples_per_class = total_samples // num_classes
+  print(f"Samples per class: {samples_per_class}, total samples:{total_samples}")
+
+
+  bottom_range = df[target_name].iloc[0].item()
+
+  range_cutoffs = []
+  range_cutoffs.append(bottom_range)
+
+  for i in range(samples_per_class,total_samples-num_classes, samples_per_class):
+    range_cutoffs.append(df[target_name].iloc[i].item())
+  
+  if df[target_name].iloc[-1].item() not in range_cutoffs:
+    range_cutoffs.append(df[target_name].iloc[-1].item())
+
+  #print(range_cutoffs)
+  class_labels = []
+  for i in range(len(range_cutoffs)-1):
+    label_string = f"{range_cutoffs[i]} < {range_cutoffs[i+1]}"  
+    class_labels.append(label_string)
+  
+  labels_list = []
+  target_list = []
+  for target in df[target_name]:
+    for i in range(len(range_cutoffs)-1):
+      if target <= range_cutoffs[i+1]:
+        labels_list.append(class_labels[i])
+        target_list.append(i)
+        break
+
+  df["class labels"] = labels_list
+  df["target"] = target_list
+
+  columns = df.columns
+  for column in columns:
+    if "Smiles" in column or "SMILES" in column or "smiles" in column:
+      smiles_name = column
+      break
+    
+  df[smiles_name] = df[smiles_name].apply(clean_ions)
+
+  return df, class_labels
  
 def load_model():
    '''
@@ -304,8 +428,17 @@ def load_model():
    neurons = lines[0].split()[1]
    input_dims = lines[1].split()[1]
    num_hidden_layers = lines[2].split()[1]
+   classifier_raw = params[3].split(":")[1].strip().replace("\n","")
+    if classifier_raw == "True":
+      classifier_flag = True
+    elif classifier_raw == "False":
+      classifier_flag = False
+    else:
+      raise ValueError("classifier_flag must be True or False")
+   num_classes = lines[4].split()[1]
 
-   model = MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers))
+   model = MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers),
+                     classifier_flag = classifier_flag, num_classes = int(num_classes))
    model.load_state_dict(torch.load("saved_model.pt",weights_only=True))
 
    return model
