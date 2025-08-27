@@ -274,7 +274,7 @@ def predict_single_value(smiles_to_predict: str, model, featurizer = "rdkit",
   model.eval()
 
   with torch.no_grad():
-    prediction = model(temp_tensor).item()
+    prediction = model(temp_tensor) #.item()
 
   if truth is not None:
     plot_text = f"Prediction: {prediction}, Truth: {truth}"
