@@ -13,6 +13,62 @@ from torchvision import datasets, transforms
 from torch.utils.data import TensorDataset, DataLoader
 import mordred
 import deepchem as dc
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+class evaluate_class():
+  '''
+    evaluates the testing set with a confusion matrix.
+  
+  '''
+  def __init__(self, model, labels: list, dataset):
+    '''
+        Constructor
+            Args:
+                model: fitted model
+                labels: class labels
+                dataset: dataset to test
+            returns:
+                None
+    '''
+    test_x = dataset[:][0]
+    test_y = dataset[:][1]
+    self.model = model
+    self.labels = labels
+    self.test_values = test_x
+    self.truths = test_y
+ 
+  def plot_confusion_matrix(self, y_preds, y_true, labels):
+    '''
+        actually plots the confusion matirx.
+        
+        Args:
+            y_preds: predicted values
+            y_true: ground truth
+            labels: class labels
+        returns:
+                None; plots confusion matrix.
+    '''
+    cm = confusion_matrix(y_true, y_preds, normalize="true")
+    fig, ax = plt.subplots(figsize=(6, 6))
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+    disp.plot(cmap="Blues", values_format=".2f", ax=ax, colorbar=False)
+    plt.title("Normalized confusion matrix")
+    plt.show()
+
+  def confusion(self):
+    '''
+        uses the trainer to make predictions on the dataset and plots the confusion matrix
+    '''
+    temp_tensor = torch.tensor(self.test_values, dtype=torch.float32)
+    self.model.eval()
+    with torch.no_grad():
+      preds_output = self.model(temp_tensor)
+    
+    preds_output = np.argmax(preds_output,axis=1)
+    y_preds = preds_output
+    y_true = self.truths
+    #y_true = np.argmax(y_true,axis=1)
+    self.plot_confusion_matrix(y_preds, y_true, labels=self.labels)
 
 def featurize(smiles_list: list, y: list,
               ions_to_clean = ["[Na+].", ".[Na+]"], featurizer = "rdkit", classifier_flag = False):
