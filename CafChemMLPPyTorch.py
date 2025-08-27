@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from sklearn.model_selection import train_test_split
@@ -128,8 +129,8 @@ class MLP_Model(nn.Module):
     f = open("MLP_model_params.txt","w")
     f.write(f"neurons: {self.neurons}\n")
     f.write(f"input_dims: {self.input_dims}\n")
-    f.write(f"num_hidden_layers: {self.num_hidden_layers}")
-    f.write(f"classifier_flag: {self.classifier_flag}")
+    f.write(f"num_hidden_layers: {self.num_hidden_layers}\n")
+    f.write(f"classifier_flag: {self.classifier_flag}\n")
     f.write(f"num_classes: {self.num_classes}")
     f.close()
 
