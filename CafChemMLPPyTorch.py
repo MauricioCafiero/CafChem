@@ -343,7 +343,7 @@ class prep_data():
     
     if self.classifier_flag == False:
       self.y_train = list(self.y_train)
-      self.y_test = list(self.y_test)S
+      self.y_test = list(self.y_test)
       self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
       self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
     else:
