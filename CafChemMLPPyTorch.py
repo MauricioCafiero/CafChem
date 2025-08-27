@@ -341,7 +341,7 @@ class prep_data():
     self.X_train = torch.tensor(self.X_train, dtype=torch.float32)
     self.X_test = torch.tensor(self.X_test, dtype=torch.float32)
     
-    if classifier_flag == False:
+    if self.classifier_flag == False:
       self.y_train = torch.tensor(self.y_train, dtype=torch.float32)
       self.y_test = torch.tensor(self.y_test, dtype=torch.float32)
     else:
