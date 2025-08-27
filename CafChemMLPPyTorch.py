@@ -107,7 +107,7 @@ class MLP_Model(nn.Module):
       classifier_flag: Boolean to perform classification
   '''
   def __init__(self, neurons: int, input_dims: int, num_hidden_layers: int, 
-               classifier_flag=False, num_classes = None):
+               classifier_flag=False, num_classes = 1):
     super(MLP_Model, self).__init__()
     self.neurons = neurons
     self.input_dims = input_dims
