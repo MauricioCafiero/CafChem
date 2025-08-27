@@ -148,7 +148,7 @@ class MLP_Model(nn.Module):
     for i in range(self.num_hidden_layers):
       x = self.linear_relu6(x)
     
-    if classifier_flag == False:
+    if self.classifier_flag == False:
       output = self.linear_output(x)
     else:
       x = self.linear_class_out(x)
