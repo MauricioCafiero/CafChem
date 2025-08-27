@@ -153,7 +153,7 @@ class MLP_Model(nn.Module):
       output = self.linear_output(x)
     else:
       x = self.linear_class_out(x)
-      output = self.classifier_output
+      output = self.classifier_output(x)
       
     return output
 
