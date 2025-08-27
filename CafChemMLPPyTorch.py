@@ -351,6 +351,21 @@ class prep_data():
 
     return train_dataset, test_dataset, train_loader, test_loader
 
+def clean_ions(smiles):
+  '''
+    Takes a smiles string and cleans the following ions from it: [Na+], [Cl-], [K+],
+    [Br-], [I-], [Ca2+].
+
+    Args:
+      smiles: smiles string
+    Returns:
+      smiles: cleaned smiles string
+  '''
+  smiles = smiles.replace("[Na+].","").replace("[Cl-].","").replace(".[Cl-]","").replace(".[Na+]","")
+  smiles = smiles.replace("[K+].","").replace("[Br-].","").replace(".[K+]","").replace(".[Br-]","")
+  smiles = smiles.replace("[I-].","").replace(".[I-]","").replace("[Ca2+].","").replace(".[Ca2+]","")
+  return smiles
+  
 def make_classes(filename: str, target_name: str, num_classes: int):
   '''
     Takes a CSV files with a SMILES column and a target column, divides it into the
