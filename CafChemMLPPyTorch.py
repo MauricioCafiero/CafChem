@@ -345,7 +345,7 @@ class prep_data():
     train_dataset = TensorDataset(X_train, y_train)
     test_dataset = TensorDataset(X_test, y_test)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=shuffle)
+    train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=self.shuffle)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     return train_dataset, test_dataset, train_loader, test_loader
