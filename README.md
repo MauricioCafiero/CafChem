@@ -7,22 +7,37 @@
 
 Libraries/modules for the CafChem tools for computational chemistry/drug design. Modules include:
 
+## Generative models for molecules
+
 - [Train a GPT and generate novel molecules](#cafchemgpt) <br>
 - [Train an RNN and generate novel molecules](#cafchemrnn) <br>
-- [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
-- [QM calculations with the UMA MLIP](#cafchemqm_uma) <br>
 - [Generative tools for hit expansion](#cafchemsubs) <br>
-- [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP](#cafchemredock) <br>
-- [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
+- [Grow Fragments in a Binding Site](#cafchemfraggrow)<br>
+
+## Machine Learning for chemistry
+
 - [Basic machine learning and cleaning ChEMBL CSV files](#cafchembml) <br>
-- [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
-- [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
-- [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
+- [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
+- [MLP for Regression and Classification with PyTorch](#cafchemmlppytorch) <br>
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
-- Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
-- [Grow Fragments in a Binding Site](#cafchemfraggrow)<br>
-- [MLP with PyTorch](#cafchemmlppytorch) <br>
+- [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
+- [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
+
+## Protein / Ligand interactions
+
+- [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
+- [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+
+## Quantum Chemistry 
+
+- [QM calculations with the UMA MLIP<sup>1</sup>](#cafchemqm_uma) <br>
+
+## LLMs for Medchem
+
+- [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
+
+<sup>1</sup>Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
 
 ## Install:
 ```
