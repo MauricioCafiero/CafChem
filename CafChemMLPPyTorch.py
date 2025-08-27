@@ -321,7 +321,7 @@ class prep_data():
     self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X_scaled, y, 
                                        test_size=test_size, random_state=random_state)
     
-    return self.X_train, self.X_test, self.y_train, self.y_test
+    return self.X_train, self.X_test, self.y_train, self.y_test, scaler
     
   def create_data_loader(self):
     '''
@@ -428,7 +428,7 @@ def load_model():
    neurons = lines[0].split()[1]
    input_dims = lines[1].split()[1]
    num_hidden_layers = lines[2].split()[1]
-   classifier_raw = params[3].split(":")[1].strip().replace("\n","")
+   classifier_raw = lines[3].split(":")[1].strip().replace("\n","")
    if classifier_raw == "True":
      classifier_flag = True
    elif classifier_raw == "False":
