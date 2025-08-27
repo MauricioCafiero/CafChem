@@ -429,12 +429,12 @@ def load_model():
    input_dims = lines[1].split()[1]
    num_hidden_layers = lines[2].split()[1]
    classifier_raw = params[3].split(":")[1].strip().replace("\n","")
-    if classifier_raw == "True":
-      classifier_flag = True
-    elif classifier_raw == "False":
-      classifier_flag = False
-    else:
-      raise ValueError("classifier_flag must be True or False")
+   if classifier_raw == "True":
+     classifier_flag = True
+   elif classifier_raw == "False":
+     classifier_flag = False
+   else:
+     raise ValueError("classifier_flag must be True or False")
    num_classes = lines[4].split()[1]
 
    model = MLP_Model(neurons=int(neurons), input_dims=int(input_dims), num_hidden_layers=int(num_hidden_layers),
