@@ -288,7 +288,7 @@ class prep_data():
   '''
   Data class to prepare raw data for model
   '''
-  def __init__(self, classifier_flag = False, batch_size: int, shuffle = True):
+  def __init__(self, batch_size: int, shuffle = True, classifier_flag = False):
     '''
         Sets up data prep parameters.
         
