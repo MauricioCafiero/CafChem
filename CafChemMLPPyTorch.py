@@ -182,7 +182,10 @@ def train(dataloader, model, loss_fn, optimizer, classifier_flag=False, num_clas
     optimizer.zero_grad()
 
     pred = model(X)
-    loss = loss_fn(pred, y) #y.view(-1,1))
+    if classifier_flag == False:
+      loss = loss_fn(pred, y.view(-1,1))
+    else
+      loss = loss_fn(pred, y)
     total_loss += loss
 
     loss.backward()
