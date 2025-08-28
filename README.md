@@ -59,62 +59,86 @@ import CafChem.CafChemFragGrow as ccfg
 import CafChem.CafChemMLPPyTorch as ccmlp
 ```
 ## CafChemGPT
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/GPT_CafChem.ipynb)
 - Train a GPT on a SMILES dataset. Use the tools provided to generate novel molecules.
 - Using a provided foundation model, finetune with a specific dataset for targeted molecule generation.
 - This also uses the CafChemGPTINF module for inference. 
 
 ## CafChemRNN
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/RNN_CafChem.ipynb)
 - Train an RNN on a SMILES dataset. Use the tools provided to generate novel molecules.
 - Using a provided foundation model, finetune with a specific dataset for targeted molecule generation. 
 
-## CafChemTxGemma
-- Inference with TxGemma models
-- Finetune a TxGemma model on your medchem dataset
+## CafChemSubs
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Hit_Expansion_CafChem.ipynb)
+- generate analogues of a molecule (from SMILES strings) using generative mask-filling and/or substitutions on phenyl rings.
+- Can also calculate some properties (QED, Lipinski properties) related to drug design.
+- Calculate Tanimoto similarities based on Fingerprints between molecules in a list and molecules against a known active.
+- visualize molecules.
+
+## CafChemFragGrow
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/FragGrow_CafChem.ipynb)
+- Explore a binding site with chemical fragments.
+- Various viewing options to probe the nature of the binding site.
+
+## CafChemBML
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/BasicML_CafChem.ipynb)
+- read ChEMBL CSV files and clean data.
+- featurize data, remove outliers, scale, apply PCA and split into training ad validation sets.
+- perform analysis with tree-based methods, linear methods, SVR, and MLP.
+
+## CafChemSkipDense
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Skipdense_CafChem.ipynb)
+- Create regression and classification models using skipdense neural networks.
+- Train, save, load and evaluate models.
+
+## CafChemMLPPyTorch
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/MLP_with_PyTorch_CafChem.ipynb)
+- Featurize a dataset and
+- Train an MLP using Pytorch.
+- Evaluate, predict with, save and load models.
+
+## CafChemClassifiers
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Classifiers_CafChem.ipynb)
+- Create a classifier model using a variety of SciKitLearn models.
+- Load a CSV with quantitative data and create classes.
+- Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
+- Analyze data with confusion matrices.
+
+## CafChemHFClassifier
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/BertClassifier_CafChem.ipynb)
+- Create a classifier model using HuggingFace.
+- Analyze data with confusion matrices.
+- Load datasets, add tokens, train, push all to the HuggingFace hub.
+
+## CafChemProp
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Chemprop_CafChem.ipynb)
+- Train the [Chemprop](https://github.com/chemprop) GNN-based MPNN model.
+- save and load trained models and analyze data.
+## CafChemEleon
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Chemeleon_CafChem.ipynb)
+- finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
+- save and load trained models and analyze data.
+
+## CafChemReDock
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Rescore_Docking_UMA_CafChem.ipynb)
+- dock molecular SMILES strings in a protein using DockString and save poses.
+- Calculate the interaction between a docking pose and a trimmed protein active site using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
+- visualize molecules.
+
+## CafChemBoltz
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Boltz_CafChem.ipynb)
+- Input a protein sequence and a list of SMILES strings.
+- Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
 
 ## CafChemQM_UMA
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/QuantumChem_UMA_CafChem.ipynb)
 - Uses ASE to implement calculations using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
 - perform energy calculations, geometry optimizations, vibrational calculations, and thermodynamics calculations.
 - Calculate a reaction Gibbs, Enthalpy and Entropy.
 - Perform simple dynamics. (Langevin works, Velocity Verlet seems a bit buggy)
 
-## CafChemSubs
-- generate analogues of a molecule (from SMILES strings) using generative mask-filling and/or substitutions on phenyl rings.
-- Can also calculate some properties (QED, Lipinski properties) related to drug design.
-- Calculate Tanimoto similarities based on Fingerprints between molecules in a list and molecules against a known active.
-- visualize molecules. 
-## CafChemReDock
-- dock molecular SMILES strings in a protein using DockString and save poses.
-- Calculate the interaction between a docking pose and a trimmed protein active site using Meta's [UMA MLIP](https://github.com/facebookresearch/fairchem).
-- visualize molecules.
-## CafChemSkipDense
-- Create regression and classification models using skipdense neural networks.
-- Train, save, load and evaluate models. 
-## CafChemBML
-- read ChEMBL CSV files and clean data.
-- featurize data, remove outliers, scale, apply PCA and split into training ad validation sets.
-- perform analysis with tree-based methods, linear methods, SVR, and MLP.
-## CafChemBoltz
-- Input a protein sequence and a list of SMILES strings.
-- Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
-## CafChemProp
-- Train the [Chemprop](https://github.com/chemprop) GNN-based MPNN model.
-- save and load trained models and analyze data.
-## CafChemEleon
-- finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
-- save and load trained models and analyze data.
-## CafChemClassifiers
-- Create a classifier model using a variety of SciKitLearn models.
-- Load a CSV with quantitative data and create classes.
-- Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
-- Analyze data with confusion matrices.
-## CafChemHFClassifier
-- Create a classifier model using HuggingFace.
-- Analyze data with confusion matrices.
-- Load datasets, add tokens, train, push all to the HuggingFace hub.
-## CafChemFragGrow
-- Explore a binding site with chemical fragments.
-- Various viewing options to probe the nature of the binding site.
-## CafChemMLPPyTorch
-- Featurize a dataset and
-- Train an MLP using Pytorch.
-- Evaluate, predict with, save and load models.
+## CafChemTxGemma
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/TxGemma_CafChem.ipynb)
+- Inference with TxGemma models
+- Finetune a TxGemma model on your medchem dataset
