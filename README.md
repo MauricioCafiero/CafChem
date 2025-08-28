@@ -32,6 +32,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 ## Quantum Chemistry 
 
 - [QM calculations with the UMA MLIP<sup>1</sup>](#cafchemqm_uma) <br>
+- [DFT and SAPT calculations using Psi4](#cafchempsi4) <br>
 
 ## LLMs for Medchem
 
@@ -57,6 +58,7 @@ import CafChem.CafChemReDock as ccr
 import CafChem.CafChemBML as ccml
 import CafChem.CafChemFragGrow as ccfg
 import CafChem.CafChemMLPPyTorch as ccmlp
+import CafChem.CafChemPsi4 as ccp4
 ```
 ## CafChemGPT
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/GPT_CafChem.ipynb)
@@ -137,6 +139,11 @@ import CafChem.CafChemMLPPyTorch as ccmlp
 - perform energy calculations, geometry optimizations, vibrational calculations, and thermodynamics calculations.
 - Calculate a reaction Gibbs, Enthalpy and Entropy.
 - Perform simple dynamics. (Langevin works, Velocity Verlet seems a bit buggy)
+
+## CafChemPsi4
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
+- Use the Psi4 code to run DFT energy and geometry optimization calculations.
+- Use SAPT on Psi4 to explore contributions to interaction energies. 
 
 ## CafChemTxGemma
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/TxGemma_CafChem.ipynb)
