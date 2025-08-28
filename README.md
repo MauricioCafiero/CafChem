@@ -37,6 +37,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 ## LLMs for Medchem
 
 - [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
+- [Inference with Ether0](#cafchemether0) <br>
 
 <sup>1</sup>Solvation (adding explicit waters and optimizing) available in ReDock and QM_UMA <br>
 
@@ -147,5 +148,11 @@ import CafChem.CafChemPsi4 as ccp4
 
 ## CafChemTxGemma
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/TxGemma_CafChem.ipynb)
-- Inference with TxGemma models
-- Finetune a TxGemma model on your medchem dataset
+- Inference with TxGemma models.
+- These models have been finetuned to answer many types of medicinal chemistry questions.
+- Finetune a TxGemma model on your own medchem dataset
+
+## CafChemEther0
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Ether0_CafChem.ipynb)
+- Inference with the Ether0 model.
+- This model has been finetuned to answer many types of medicinal chemistry questions. (see the notebook for use cases).
