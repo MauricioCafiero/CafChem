@@ -36,6 +36,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 
 ## LLMs for Medchem
 
+- [AI Agent with Medicinal Chemistry Tools](#cafchemagent)
 - [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
 - [Inference with Ether0](#cafchemether0) <br>
 
@@ -145,6 +146,10 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
 - Use the Psi4 code to run DFT energy and geometry optimization calculations.
 - Use SAPT on Psi4 to explore contributions to interaction energies. 
+
+## CafChemAgent
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ChemAgent_CafChem.ipynb)
+- A simple agent to test light-weight HuggingFace models on chemical tool use.
 
 ## CafChemTxGemma
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/TxGemma_CafChem.ipynb)
