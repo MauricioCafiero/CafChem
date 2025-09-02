@@ -29,6 +29,10 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
 
+## Medicinal Chemistry
+
+- [Pharmacophore feature testing](#cafchempharm) <br>
+
 ## Quantum Chemistry 
 
 - [QM calculations with the UMA MLIP<sup>1</sup>](#cafchemqm_uma) <br>
@@ -141,6 +145,11 @@ import CafChem.CafChemPsi4 as ccp4
 - perform energy calculations, geometry optimizations, vibrational calculations, and thermodynamics calculations.
 - Calculate a reaction Gibbs, Enthalpy and Entropy.
 - Perform simple dynamics. (Langevin works, Velocity Verlet seems a bit buggy)
+
+## CafChemPharm
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pharmacophores_CafChem.ipynb)
+- Generate a defined number of conformers for a list of molecules.
+- Test pharmacophore features of a single or multiple conformers against a known active. 
 
 ## CafChemPsi4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
