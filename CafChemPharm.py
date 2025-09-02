@@ -143,7 +143,7 @@ class evaluate_pharmacophore():
   '''
     Class for evaluating pharmacophore features of a known and test molecule
   '''
-  def __init__(self,known,test, draw_flag = True):
+  def __init__(self,known: str, test: str, draw_flag = True):
     '''
       Reads SMILES strings for a known active and a test molecule, finds the pharmacophore features
       for each and makes comparisons.
@@ -279,7 +279,7 @@ class evaluate_pharmacophore_all_confs():
   '''
     Class for evaluating pharmacophore features of a known and all conformations of a test molecule
   '''
-  def __init__(self,known: string, test: string, num_confs: int):
+  def __init__(self,known: str, test: str, num_confs: int):
     '''
       Reads SMILES strings for a known active and a test molecule, finds the pharmacophore features
       for each conformation of the test molecule and makes comparisons.
