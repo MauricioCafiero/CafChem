@@ -158,6 +158,7 @@ import CafChem.CafChemPsi4 as ccp4
 
 ## CafChemAgent
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ChemAgent_CafChem.ipynb)
+- [using Apertus](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ChemAgent_CafChem_Apertus.ipynb)
 - A simple agent to test light-weight HuggingFace models on chemical tool use.
 
 ## CafChemTxGemma
