@@ -41,6 +41,7 @@ Libraries/modules for the CafChem tools for computational chemistry/drug design.
 ## LLMs for Medchem
 
 - [AI Agent with Medicinal Chemistry Tools](#cafchemagent)
+- [Embedding Models for Molecules](#cafchemembed)
 - [Inference and finetuning with TxGemma](#cafchemtxgemma) <br>
 - [Inference with Ether0](#cafchemether0) <br>
 
@@ -160,6 +161,12 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ChemAgent_CafChem.ipynb)
 - [using Apertus](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ChemAgent_CafChem_Apertus.ipynb)
 - A simple agent to test light-weight HuggingFace models on chemical tool use.
+
+## CafChemEmbed
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Embeddings_CafChem.ipynb)
+- Create a contrastive pairs dataset
+- Train an embedding model
+- Use embeddings for similarity calculations or features for regression
 
 ## CafChemTxGemma
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/TxGemma_CafChem.ipynb)
