@@ -21,15 +21,32 @@ os.environ['WANDB_DISABLED'] = 'true'
 
 class embed_training_data():
   '''
+    Class to create datasets for embedding models
   '''
   def __init__(self, num_classes: int):
     '''
+      Create a set of contrastive pairsm either from class data or target data.
+
+      Args:
+        num_classes: number of classes in the dataset
     '''
     self.num_classes = num_classes
 
   def read_with_classes(self, file_path: str, SMILES_column: str, classes_column: str,
                         classes_to_contrast: list[int], test_size = 0.15):
     '''
+      Takes a CSV files with a SMILES column and a target column, create contrastive pairs, 
+      return a dataframe and a split dataset. Cleans ions from the SMILES strings.
+
+        Args:
+          filen_path: name of the CSV file
+          SMILES_column: name of the SMILES column
+          classes_column: name of the classes column
+          classes_to_contrast: which classes should have a 2 (dis-similar).
+          test_size: size of the test set
+        Returns:
+          pairs_df: dataframe with the contrastive pairs
+          pairs_ds: split dataset
     '''
     df = pd.read_csv(file_path)
     df[SMILES_column] = df[SMILES_column].apply(clean_ions)
@@ -71,14 +88,17 @@ class embed_training_data():
     '''
       Takes a CSV files with a SMILES column and a target column, divides it into the
       requested number of classes, sets the boundaries for thise classes, and assigns each 
-      datapoint to a class. Returns a dataframe with an additional column containing the 
-      classes. Also cleans ions from the SMILES strings.
+      datapoint to a class. Also cleans ions from the SMILES strings. Calls 
+      read_with_classes to create the contrastive pairs.
 
         Args:
-          filename: name of the CSV file
+          file_path: name of the CSV file
           target_name: name of the target column
+          classes_to_contrast: which classes should have a 2 (dis-similar).
+          test_size: size of the test set
         Returns:
-          df: dataframe with the classes
+          pairs_df: dataframe with the contrastive pairs
+          pairs_ds: split dataset
     '''
     df = pd.read_csv(file_path)
     df.sort_values(by=[target_name],inplace=True)
@@ -145,11 +165,25 @@ def clean_ions(smiles):
 
 class embedding_model():
   '''
+    Class to train an embedding model.
   '''
   def __init__(self, training_dataset, validation_dataset,
                num_labels: int, num_epochs = 5, batch_size = 64, weight_decay = 0.01,               
                base_model_name = 'bert-base-cased', trained_suffix = 'finetuned-contrastive'):
     '''
+      Accepts a contrastive pairs dataset and trains an embedding model.
+
+        Args:
+          training_dataset: contrastive pairs dataset
+          validation_dataset: contrastive pairs dataset
+          num_labels: number of classes in the dataset
+          num_epochs: number of epochs to train the model
+          batch_size: batch size for training
+          weight_decay: weight decay for training
+          base_model_name: base model to use for training
+          trained_suffix: suffix to add to the model name
+        Returns:
+          None
     '''
     self.base_model_name = base_model_name
     self.trained_suffix = trained_suffix
@@ -162,6 +196,12 @@ class embedding_model():
 
   def set_up_model(self):
     '''
+      Sets up the model for training.
+
+        Args:
+          None
+        Returns:
+          None  
     '''
     model_name = self.base_model_name
     self.embedding_model = SentenceTransformer(model_name)
@@ -197,6 +237,12 @@ class embedding_model():
   
   def train_model(self):
     '''
+      Trains the model.
+
+        Args:
+          None
+        Returns:
+          None
     '''
     self.trainer.train()
     print("Model training complete.")
@@ -205,12 +251,24 @@ class embedding_model():
   
   def push_to_hub(self, repo_name: str):
     '''
+      Pushes the model to the Huggingface Hub.
+
+        Args:
+          repo_name: name of the repository
+        Returns:
+          None
     '''
     self.embedding_model.push_to_hub(repo_name)
     print("Model saved to Huggingface Hub.")
   
   def load_model_from_hub(self, repo_name: str):
     '''
+      Loads the model from the Huggingface Hub.
+
+        Args:
+          repo_name: name of the repository
+        Returns:
+          None
     '''
     self.embedding_model = SentenceTransformer(repo_name)
     print("Model loaded from Huggingface Hub.")
@@ -219,18 +277,25 @@ class embedding_model():
   
   def encode(self, smiles_list: list[str]):
     '''
+      Encodes a list of smiles strings.
+
+        Args:
+          smiles_list: list of smiles strings
+        Returns:
+          embeddings: list of embeddings
     '''
     embeddings = self.embedding_model.encode(smiles_list)
     return embeddings
   
-  def decode(self, embeddings: list):
-    '''
-    '''
-    new_smiles = self.embedding_model.decode(embeddings)
-    return new_smiles
-  
   def similarity_scalar(self, test_smiles: str, ref_smiles: str):
     '''
+      Calculates the similarity between two smiles strings.
+
+        Args:
+          test_smiles: smiles string
+          ref_smiles: smiles string
+        Returns:
+          similarity: similarity between the two smiles strings
     '''
     test_embedding = self.embedding_model.encode([test_smiles])
     ref_embedding = self.embedding_model.encode([ref_smiles])
@@ -239,6 +304,13 @@ class embedding_model():
   
   def similarity_list(self, test_smiles: list[str], ref_smiles: str):
     '''
+      Calculates the similarity between a list of smiles strings and a single smiles string.
+
+        Args:
+          test_smiles: list of smiles strings
+          ref_smiles: smiles string
+        Returns:
+          similarities: list of similarities
     '''
     test_embeddings = self.embedding_model.encode(test_smiles)
     ref_embedding = self.embedding_model.encode([ref_smiles])
@@ -247,6 +319,12 @@ class embedding_model():
   
   def similarity_matrix(self, test_smiles: list[str]):
     '''
+      Calculates the similarity between a list of smiles strings with itself.
+
+        Args:
+          test_smiles: list of smiles strings
+        Returns:
+          similarities: list of similarities
     '''
     test_embeddings = self.embedding_model.encode(test_smiles)
     print(test_embeddings.shape)
@@ -255,6 +333,13 @@ class embedding_model():
 
   def embed_and_featurize(self, smiles_list: list[str]):
     '''
+      Encodes a list of smiles strings and returns a dataframe with the embeddings.
+
+        Args:
+          smiles_list: list of smiles strings
+        Returns:
+          df: dataframe with the embeddings
+          embeddings: array of embeddings
     '''
     embeddings = self.embedding_model.encode(smiles_list)
 
