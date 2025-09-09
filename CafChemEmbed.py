@@ -348,6 +348,86 @@ class embedding_model():
     df.insert(0, "smiles", smiles_list)
 
     return df, embeddings
+  
+  def model_eval(self, eval_ds):
+      ''' 
+        evaluates the accuracy of the model based on a provided dataset. Assigns a value of 0 if
+        the similarity > 0 and 2 otherwise. 
+
+          Args:
+            eval_ds: the dataset for evaluation
+          Returns:
+            comparisons: a dictonary of ground truth labels and the prdicted labels
+            accuracy: the accuracy of the model as (number correct)/(total number)
+      '''
+      comparisons = {}
+      tally = 0
+
+      total_steps = len(eval_ds)
+      logging_interval = int(total_steps*0.05)
+
+      for i, item in enumerate(eval_ds):
+        premise = item['premise']
+        hypothesis = item['hypothesis']
+        score = item['label']
+        embeddings = self.model.encode([premise, hypothesis])
+        sim = self.model.similarity(embeddings[0], embeddings[1])
+
+        pred = 0 if sim > 0.0 else 2
+        if pred == score:
+          tally += 1
+
+        comparisons[f'datapoint {i}'] = {'label': score, 'prediction': pred,
+                                         'premise': premise, 'hypothesis': hypothesis}
+
+        
+        if i%logging_interval == 0:
+          print(f"Completed step {i} / {total_steps}. Current tally is {tally}")
+        
+      accuracy = tally/(i+1)
+      print(f"Accuracy is {accuracy:.3f}")
+      
+      self.comparisons = comparisons
+      
+      return self.comparisons, accuracy
+      
+    def view_eval(self):
+      '''
+        Creates images of the molecules that were classified correctly and incorrectly.
+
+          Args:
+            None
+          Returns:
+            img_agreed: image of the molecules that were classified correctly
+            img_disagreed: image of the molecules that were classified incorrectly
+      '''
+      agreed = []
+      agreed_labels = []
+      disagreed = []
+      disagreed_labels = []
+      for res_dict in self.comparisons.values():
+        if res_dict['label'] != res_dict['prediction']:
+          disagreed.append([res_dict['premise'], res_dict['hypothesis']])
+          disagreed_labels.append(f'truth: {res_dict['label']}')
+          disagreed_labels.append(f'prediction: {res_dict['prediction']}')
+        else:
+          agreed.append([res_dict['premise'], res_dict['hypothesis']])
+          agreed_labels.append(f'truth: {res_dict['label']}')
+          agreed_labels.append(f'prediction: {res_dict['prediction']}')
+      
+      mols_agreed = []
+      mols_disagreed = []
+      for pair in agreed:
+        mols_agreed.append(Chem.MolFromSmiles(pair[0]))
+        mols_agreed.append(Chem.MolFromSmiles(pair[1]))
+      for pair in disagreed:
+        mols_disagreed.append(Chem.MolFromSmiles(pair[0]))
+        mols_disagreed.append(Chem.MolFromSmiles(pair[1]))
+      
+      img_agreed = Draw.MolsToGridImage(mols_agreed, legends=agreed_labels, molsPerRow=2, subImgSize=(200,200))
+      img_disagreed = Draw.MolsToGridImage(mols_disagreed, legends=disagreed_labels, molsPerRow=2, subImgSize=(200,200))
+
+      return img_agreed, img_disagreed
 
 def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
                     use_pca = False, pca_size = 100, seed = 42, splits = 0.9):
