@@ -370,8 +370,8 @@ class embedding_model():
         premise = item['premise']
         hypothesis = item['hypothesis']
         score = item['label']
-        embeddings = self.model.encode([premise, hypothesis])
-        sim = self.model.similarity(embeddings[0], embeddings[1])
+        embeddings = self.embedding_model.encode([premise, hypothesis])
+        sim = self.embedding_model.similarity(embeddings[0], embeddings[1])
 
         pred = 0 if sim > 0.0 else 2
         if pred == score:
