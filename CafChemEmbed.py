@@ -391,7 +391,7 @@ class embedding_model():
       
       return self.comparisons, accuracy
       
-    def view_eval(self):
+  def view_eval(self):
       '''
         Creates images of the molecules that were classified correctly and incorrectly.
 
