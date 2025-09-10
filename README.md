@@ -1,11 +1,13 @@
-# CafChem
+# CafChem - Libraries for computational chemistry/drug design research.
+
+See below for sample notebooks for various computation and medicinal chemistry, machine learning and AI research tools.
+
+## Some basics and background material
 
 - See the [list of commonly used Python techniques](https://github.com/MauricioCafiero/CafChem/blob/main/Tips_and_Oneliners.md).
+- See the [sample notebook for PubChemPy usage](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pubchem_CafChem.ipynb).
 - See the [guide to using various python packages on RACC2](https://github.com/MauricioCafiero/CafChem/blob/main/run_python_racc.md).
 - See the [primer on regular expressions](https://github.com/MauricioCafiero/CafChem/blob/main/regex.md).
-- See the [notebooks folder](https://github.com/MauricioCafiero/CafChem/tree/main/notebooks) which contains Colab notebooks to demonstrate each CafChem library.
-
-Libraries/modules for the CafChem tools for computational chemistry/drug design. Modules include:
 
 ## Generative models for molecules
 
