@@ -10,6 +10,7 @@
 - [Making and saving a Matplotlib plot](#save-matplotlib-image) <br>
 - [Quick Linear Regression](#quick-linear-regression) <br>
 - [Correlation Heatmap from dataframe](#correlation-heatmap-from-dataframe) <br>
+- [Download files from Colab](#download-files-from-colab)
 
 
 ## Using a text classifier from HuggingFace
@@ -256,6 +257,12 @@ plt.tight_layout()
 map_0_fig.savefig("heatmap.jpg")
 ```
 
+## Download files from Colab
+```
+from google.colab import files
 
+for i in range(10):
+    files.download(f"file_{i}.xyz")
+```
 
 
