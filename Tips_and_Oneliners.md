@@ -260,9 +260,13 @@ map_0_fig.savefig("heatmap.jpg")
 ## Download files from Colab
 ```
 from google.colab import files
+import os
 
-for i in range(10):
-    files.download(f"file_{i}.xyz")
+all_files = os.listdir("target_files")
+files_to_download = [file for file in all_files if (os.path.splitext(file)[1]==".xyz")]
+
+for file in files_to_download:
+    files.download(file)
 ```
 
 
