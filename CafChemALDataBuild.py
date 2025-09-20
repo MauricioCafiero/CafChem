@@ -11,6 +11,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score
 
+import warnings
+
+import numpy as np
+import pandas as pd
+from rdkit import Chem
+from rdkit.Chem import AllChem, Draw, Descriptors
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import r2_score
+
+%env PYTHONWARNINGS=IGNORE::FutureWarning:sklearn
+
 def GP_regression_std(regressor, X_in):
     _, std = regressor.predict(X_in, return_std=True)
     query_idx = np.argmax(std)
@@ -21,7 +33,8 @@ class build_data():
     Class to build the minimum dataset which, when fit with a Gaussian Processes model,
     will give an R2 score for a vaidation set above a set threshold (0.65 default).
     '''
-    def __init__(self, path_to_input: str, target_column: str, splits = 0.80, random_seed = 42):
+    def __init__(self, path_to_input: str, target_column: str, do_log = False, splits = 0.80, 
+                 fraction_initial = 0.3, fraction_queries = 0.05, random_seed = 42):
         '''
         Initialize class
 
@@ -30,6 +43,8 @@ class build_data():
                 target_column: which column to set as a target
                 splits: what fraction to use for training data
                 random seed: seed for splitting
+                fraction_initial: what fraction of the training data to use for the initial learning set
+                fraction_queries: what fraction of the training data to use for the queries
             Returns:
                 None
         '''
@@ -37,6 +52,9 @@ class build_data():
         self.target_column = target_column
         self.splits = splits
         self.random_seed = random_seed
+        self.do_log = do_log
+        self.fraction_initial = fraction_initial
+        self.fraction_queries = fraction_queries
 
     def process_initial_data(self):
         '''
@@ -67,18 +85,28 @@ class build_data():
         smiles = []
         print_flag = False
         for i,smile in enumerate(smiles_raw):
+            add_flag = True
             try:
+              smile = smile.replace('[Na+].','').replace('.[Na+]','')
               mol = Chem.MolFromSmiles(smile)
               dictionary_descriptors = Chem.Descriptors.CalcMolDescriptors(mol)
               temp_vec = []
               for key in dictionary_descriptors:
                 temp_vec.append(dictionary_descriptors[key])
-              X_raw.append(temp_vec)
-              y.append(target[i])
-              smiles.append(smile)
-              if print_flag == True:
-                print(f"{len(temp_vec)} descriptors calculated for: {smile}")
-                print("--------------------------------------------------------")
+              for val in temp_vec:
+                  if 'nan' in str(val).lower():
+                      add_flag = False
+                      break
+              if add_flag == True:
+                  #print('adding')
+                  X_raw.append(temp_vec)
+                  y.append(target[i])
+                  smiles.append(smile)
+                  if print_flag == True:
+                    print(f"{len(temp_vec)} descriptors calculated for: {smile}")
+                    print("--------------------------------------------------------")
+              else:
+                  print(f"Could not featurize molecule {i}")
             except:
               print(f"Could not featurize molecule {i}")
         
@@ -88,6 +116,9 @@ class build_data():
         scaler = StandardScaler()
         X = scaler.fit_transform(X_raw)
         print('Data scaled')
+
+        if self.do_log:
+            y = [np.log10(val) for val in y]
         
         X = np.array(X)
         y = np.array(y)
@@ -108,8 +139,9 @@ class build_data():
         print('Data split!')
         print(f'Length of training set: {self.X_train_raw.shape[0]}')
 
-        self.n_initial = int(0.5*len(self.X_train_raw))
+        self.n_initial = int(self.fraction_initial*len(self.X_train_raw))
         self.initial_idx = np.random.choice(range(len(self.X_train_raw)),size = self.n_initial, replace=False)
+        self.original_size = len(self.X_train_raw)
         
         X_train = []
         y_train = []
@@ -119,7 +151,16 @@ class build_data():
             y_train.append(self.y_train_raw[j])
             smiles_train.append(self.smiles_train_raw[j])
 
-        self.smiles_train = smiles_train
+        for j in np.flip(np.sort(self.initial_idx)):
+            self.X_train_raw = np.delete(self.X_train_raw, j, axis=0)
+            self.y_train_raw = np.delete(self.y_train_raw, j, axis=0)
+            self.smiles_train_raw = np.delete(self.smiles_train_raw, j, axis=0)
+
+        self.smiles_train_dyn = list(smiles_train)
+        self.X_train_dyn = np.array(X_train)
+        self.y_train_dyn = np.array(y_train)
+        
+        self.smiles_train = list(smiles_train)
         self.X_train = np.array(X_train)
         self.y_train = np.array(y_train)
         if self.X_train.shape[0] == self.y_train.shape[0]:
@@ -141,8 +182,8 @@ class build_data():
                         n_queries: how many queries per cycle; currently 10% of X_train_raw
                         
         '''
-        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-2,1e20)) \
-        + WhiteKernel(noise_level=1, noise_level_bounds=(1e-10,1e+3))
+        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-5,1e5)) \
+        + WhiteKernel(noise_level=1, noise_level_bounds=(1e-5,1e+5))
 
         self.regressor = ActiveLearner(
             estimator = GaussianProcessRegressor(kernel=kernel),
@@ -155,24 +196,25 @@ class build_data():
         self.points_used = list(self.initial_idx)
         self.data_memory = []
         self.MAE_history = []
-        self.n_queries = int(0.1*len(self.X_train_raw))
+        self.Train_score_history = []
+        self.n_queries = int(self.fraction_queries*len(self.X_train_raw))
         
         print('initial data holders set!')
 
-    def learning_loop(self, stop_criteria = 0.65, path_to_new = 'AL_data.csv'):
+    def learning_loop(self, stop_criteria = 0.65):
         '''
             Loop for learning. Performs a cycle of learning and then evaluates the R2 for the 
             validation set. If it is above the threshold, it exits. Reports stats at each cycle
 
             Args:
-                stop_criteria: R2 validation value desired
-                path_to_new: filename and path for new dataset
+                None
             Returns:
                 None; at the end produces 'points_used' which has all points used to learn
         '''
         self.stop_criteria = stop_criteria
         
-        while len(self.points_used) < len(self.X_train_raw):
+        
+        while len(self.points_used) < (self.original_size - self.n_queries):
         
             temp_used = []
             for idx in range(self.n_queries):
@@ -180,11 +222,20 @@ class build_data():
                 #print(f'At step{idx} the query number is: {query_idx}')
                 self.regressor.teach(self.X_train_raw[query_idx].reshape(1,-1), self.y_train_raw[query_idx].reshape(1,))
                 temp_used.append(query_idx)
+
+                self.X_train_dyn = np.concatenate((self.X_train_dyn, self.X_train_raw[query_idx,:].reshape(1,-1)), axis=0)
+                self.y_train_dyn = np.concatenate((self.y_train_dyn, self.y_train_raw[query_idx].reshape(1)), axis=0)
+                self.smiles_train_dyn.append(self.smiles_train_raw[query_idx])
+
+                self.X_train_raw = np.delete(self.X_train_raw, query_idx, axis=0)
+                self.y_train_raw = np.delete(self.y_train_raw, query_idx, axis=0)
+                self.smiles_train_raw = np.delete(self.smiles_train_raw, query_idx, axis=0)
+                
+                
                 if idx%5 ==0:
                     print(f"completed step {idx}")
             
-            self.points_used.extend(set(temp_used))
-            self.points_used = list(set(self.points_used))
+            self.points_used.extend(temp_used)
             
             print(f"Active learning with {self.n_queries} datapoints complete")
             if len(self.data_memory) > 0:
@@ -204,55 +255,69 @@ class build_data():
             ave_diff = abs(ave_diff)
             print(f'MAE: {ave_diff:19.3f}')
             rs_score = r2_score(self.y_valid, y_pred)
-            print(f'Current R2 score = {rs_score:10.3f}')
+            print(f'Current Validation set R2 score = {rs_score:10.3f}')
+            
+            r2_train, _ = self.train_score()
             print("============================================")
             
             self.R2.append(rs_score)
+            self.Train_score_history.append(r2_train)
             self.MAE_history.append(ave_diff)
             self.data_memory.append(len(self.points_used))
             
             print('R2 score history:')
-            for i,score in enumerate(self.R2):
-                print(f"Score = {score:10.3f}, MAE = {self.MAE_history[i]:10.3f}, total datapoints = {self.data_memory[i]:7}")
-                    
+            for i, score in enumerate(self.R2):
+                print(f"Train Score = {self.Train_score_history[i]:7.3f}, Val score = {score:7.3f}, Val MAE = {self.MAE_history[i]:7.3f}, total datapoints = {self.data_memory[i]:7}")
+
+            print("============================================")
+            
             if self.R2[-1] > 0.65:
                 break
 
-        self.finish_learning(path_to_new)
+        self.finish_learning()
 
-    def finish_learning(self, path_to_new: str):
+    def train_score(self):
         '''
-        After the learning loop, this function puts togther a dataset of all of the datapoints used to training. 
-        This dataset, including SMILES strings and target values, is saved to a CSV.
-        
+        Calculates the R2 score for the training set.
+
             Args:
-                path_to_new: location and filename for new csv
-            
+                None
+            Returns:
+                r2_train: the R2 score for the training set
+                train_pred: the predicted values for the training set
+        '''
+        train_pred = self.regressor.predict(self.X_train_dyn, return_std=False)
+        r2_train = r2_score(self.y_train_dyn,train_pred)
+        print(f"Current training set R2 score: {r2_train:.3f}")
+
+        return r2_train, train_pred
+
+    def finish_learning(self):
+        '''
+        Saves the final dataset to a CSV file.
+
+            Args:
+                None
             Returns:
                 None
         '''
-        X_train = list(self.X_train)
-        y_train = list(self.y_train)
-        smiles_train = list(self.smiles_train)
-        
-        points_used = set(self.points_used)
-        for point in points_used:
-            if point not in list(self.initial_idx):
-                #print(f'adding {point}')
-                X_train.append(self.X_train_raw[point])
-                y_train.append(self.y_train_raw[point])
-                smiles_train.append(self.smiles_train_raw[point])
 
-        train_pred = self.regressor.predict(X_train, return_std=False)
-        r2_train = r2_score(y_train,train_pred)
-        print("============================================")
-        print(f"Score for complete training set: {r2_train}")
-        
-        if len(X_train) == self.data_memory[-1]:
+        r2_train, train_pred = self.train_score()
+
+        y_pred, y_std = self.regressor.predict(self.X_valid, return_std=True)
+        y_pred, y_std = y_pred.ravel(), y_std.ravel()
+    
+        plt.scatter(self.y_train_dyn,train_pred,color="blue",label="ML-train")
+        plt.scatter(self.y_valid,y_pred,color="green",label="ML-valid")
+        plt.legend()
+        plt.xlabel("known")
+        plt.ylabel("predicted")
+        plt.show
+
+        if len(self.X_train_dyn) == self.data_memory[-1]:
             print(f'Built dataset with {self.data_memory[-1]} data points')
-            built_dict = {'SMILES': smiles_train, 'target': y_train}
+            built_dict = {'SMILES': self.smiles_train_dyn, 'target': self.y_train_dyn}
             df = pd.DataFrame.from_dict(built_dict)
-            
-            df.to_csv(path_to_new, index=False)
+            df.to_csv('input_file_ALBuilt.csv', index=False)
             print('Saved to CSV file.')
 
