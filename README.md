@@ -25,6 +25,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
+- [Build a dataset with active learning](#cafchemaldatabuild) <br>
 
 ## Protein / Ligand interactions
 
@@ -130,6 +131,11 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Chemeleon_CafChem.ipynb)
 - finetune the [Chemeleon](https://github.com/JacksonBurns/chemeleon) foundation model.
 - save and load trained models and analyze data.
+
+## CafChemALDataBuild
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AL_DataBuild_CafChem.ipynb)
+- Use active learning and a gaussian process regressor to build up a dataset to a desired accuracy.
+- export the dataset at the end.
 
 ## CafChemReDock
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Rescore_Docking_UMA_CafChem.ipynb)
