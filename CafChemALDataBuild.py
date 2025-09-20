@@ -21,8 +21,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score
 
-%env PYTHONWARNINGS=IGNORE::FutureWarning:sklearn
-
 def GP_regression_std(regressor, X_in):
     _, std = regressor.predict(X_in, return_std=True)
     query_idx = np.argmax(std)
