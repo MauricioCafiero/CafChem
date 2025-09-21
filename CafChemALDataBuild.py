@@ -269,7 +269,7 @@ class build_data():
 
             print("============================================")
             
-            if self.R2[-1] > 0.65:
+            if self.R2[-1] > self.stop_criteria:
                 break
 
         self.finish_learning()
