@@ -8,6 +8,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - See the [sample notebook for PubChemPy usage](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pubchem_CafChem.ipynb).
 - See the [guide to using various python packages on RACC2](https://github.com/MauricioCafiero/CafChem/blob/main/run_python_racc.md).
 - See the [primer on regular expressions](https://github.com/MauricioCafiero/CafChem/blob/main/regex.md).
+- See the [modeling tips from Kaggle competition winners](https://github.com/MauricioCafiero/CafChem/blob/main/modeling_tips.md).
 
 ## Generative models for molecules
 
