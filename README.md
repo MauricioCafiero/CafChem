@@ -4,7 +4,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 
 ## Some basics and background material
 
-- [Python best practices, tips and primers](https://github.com/MauricioCafiero/CafChem/tree/main/docs).
+- [Python best practices, tips and primers](https://github.com/MauricioCafiero/CafChem/blob/main/docs/README.md).
 
 ## Generative models for molecules
 
