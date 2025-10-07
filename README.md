@@ -6,7 +6,6 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 
 - [Python best practices, tips and primers](https://github.com/MauricioCafiero/CafChem/blob/main/docs/README.md).
 - [Notebook example of using PubChemPy](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pubchem_CafChem.ipynb).
-- [Notebook example of using pksmart for Pharmacokinetic properties](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PK_prediction_CafChem.ipynb).
 
 ## Generative models for molecules
 
@@ -34,6 +33,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 ## Medicinal Chemistry
 
 - [Pharmacophore feature testing](#cafchempharm) <br>
+- [Pharmacokinetic Properties](#cafchempk) <br>
 
 ## Quantum Chemistry 
 
@@ -157,7 +157,12 @@ import CafChem.CafChemPsi4 as ccp4
 ## CafChemPharm
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pharmacophores_CafChem.ipynb)
 - Generate a defined number of conformers for a list of molecules.
-- Test pharmacophore features of a single or multiple conformers against a known active. 
+- Test pharmacophore features of a single or multiple conformers against a known active.
+
+##CafChemPK
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PK_prediction_CafChem.ipynb).
+- predict human, monkey, dog and rat pharmacokinetic properties.
+
 
 ## CafChemPsi4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
