@@ -2,11 +2,30 @@
 
 ## Data Structure tips
 
-- When appending to a list of length *n*, a new list is created of length *m > n* and the old list is copied over. Then the new length *m* is full, another new list is created to continue appending. This takes up extra memory and add time overhead during the allocation and copying processes.
+- When appending to a list of length *n*, a new list is created of length *m > n* and the old list is copied over. Then the new length *m* is full, another new list is created to continue appending. This takes up extra memory and adds time overhead during the allocation and copying processes.
 - While tuples cannot be appended to, they can be added together, and the creation of the new tuple takes time, but does not incur the extra memory that appending to a list does.
 - Dictionaries and sets have O(1) lookup compared to ~O(n) for a list.
 - In general use Numpy arrays as much as possible. These will run efficiently on CPUs.
 - Converting data structures to Torch tensors will run efficiently on GPUs.
+- A Marisa Trie can store string data more efficiently than other data structures:
+```
+!pip install marisa-trie
+import marisa_trie
+
+trie = marisa_trie.Trie(df["SMILES"].to_list())
+
+#check for membership
+'O=C1c2ccccc2-c2nnc(-c3ccc(Cl)cc3)cc21' in trie
+>> True
+
+#get id number
+trie['O=C1c2ccccc2-c2nnc(-c3ccc(Cl)cc3)cc21']
+>> 916
+
+#query value
+trie.restore_key(916)
+>>'O=C1c2ccccc2-c2nnc(-c3ccc(Cl)cc3)cc21'
+```
 
 ## Namespace
 - When a variable is called, python looks through the local namespace, then global namespace, and then on modules.
@@ -69,8 +88,8 @@ v1 = np.array((1.0, 2.0, 3.0))
 v2 = np.array((2.3, 3.4, 7.6))
 product = np.zeros((3))
 
-evaluate('v1+v2', out=dot_product)
-print(dot_product)
+evaluate('v1+v2', out=product)
+print(product)
 ```
 
 ## Parallel computation
