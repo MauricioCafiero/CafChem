@@ -159,7 +159,7 @@ import CafChem.CafChemPsi4 as ccp4
 - Generate a defined number of conformers for a list of molecules.
 - Test pharmacophore features of a single or multiple conformers against a known active.
 
-##CafChemPK
+## CafChemPK
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PK_prediction_CafChem.ipynb).
 - predict human, monkey, dog and rat pharmacokinetic properties.
 
