@@ -6,6 +6,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 
 - [Python best practices, tips and primers](https://github.com/MauricioCafiero/CafChem/blob/main/docs/README.md).
 - [Notebook example of using PubChemPy](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pubchem_CafChem.ipynb).
+- [Coding reading list](https://github.com/MauricioCafiero/CafChem/blob/main/docs/reading_suggestions.md)
 
 ## Generative models for molecules
 
