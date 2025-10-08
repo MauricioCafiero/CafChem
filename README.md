@@ -34,6 +34,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 
 - [Pharmacophore feature testing](#cafchempharm) <br>
 - [Pharmacokinetic Properties](#cafchempk) <br>
+- [Find bioactive molecules on Chembl](#cafchembl) <br>
 
 ## Quantum Chemistry 
 
@@ -162,6 +163,11 @@ import CafChem.CafChemPsi4 as ccp4
 ## CafChemPK
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PK_prediction_CafChem.ipynb).
 - predict human, monkey, dog and rat pharmacokinetic properties.
+
+## CafChemBl
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Chembl_CafChem.ipynb)
+- query Uniprot for protein IDs
+- query Chembl for bioactive molecules for the desired protein.
 
 
 ## CafChemPsi4
