@@ -26,7 +26,8 @@
 | Active Machine Learning with Python | Margaux Masson-Forsythe |
 | Machine Learning | Oliver Theobald |
 | Machine Learning with Python | Oliver Theobald |
-| Deep Learning for Coders with fastai and PyTorch | Howard & Gugger |
+| The Hundred-Page Machine Learning Book | Andriy Burkov |
+| The Hundred-Page Language Models Book | Andriy Burkov |
 
 ### AI Development Tools
 | Title | Author |
@@ -34,6 +35,7 @@
 | Developing Apps with GPT-4 & ChatGPT | Caelen & Biete |
 | Learning LangChain | Oshin & Campos |
 | Langgraph Crash Course | Greg Lim |
+| Prompt Engineering for LLMs | Berryman & Ziegler |
 | Beyond Vibe Coding | Osmani |
 
 ## JavaScript & Web Development
