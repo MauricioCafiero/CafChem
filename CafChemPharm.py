@@ -143,7 +143,7 @@ class evaluate_pharmacophore():
   '''
     Class for evaluating pharmacophore features of a known and test molecule
   '''
-  def __init__(self,known: str, test: str, draw_flag = True):
+  def __init__(self,known: str, test: str, draw_flag = True,  print_flag = True):
     '''
       Reads SMILES strings for a known active and a test molecule, finds the pharmacophore features
       for each and makes comparisons.
@@ -152,12 +152,14 @@ class evaluate_pharmacophore():
         known: SMILES string for the known active
         test: SMILES string for the test molecule
         draw_flag: boolean, whether to draw the molecules or not
+        print_flag: boolean, whether to print the pharmacophore features or not
       Returns:
         None
     '''
     self.known = Chem.MolFromSmiles(known)
     self.test = Chem.MolFromSmiles(test)
     self.draw_flag = draw_flag
+    self.print_flag = print_flag
     self.keep = ('Donor', 'Acceptor', 'NegIonizable', 'PosIonizable', 'ZnBinder', 'Aromatic', 'LumpedHydrophobe')
 
     self.smiles = [known, test]
@@ -212,7 +214,7 @@ class evaluate_pharmacophore():
 
     return self.feat_lists, self.feat_maps
   
-  def get_feat_score(self, print_flag = True):
+  def get_feat_score(self):
     '''
       Calculates the pharmacophore feature score for the test molecule. 
       The score is normalized by the number of features in the known and test molecules.
@@ -226,7 +228,7 @@ class evaluate_pharmacophore():
     self.test_score_norm = self.feat_maps[1].ScoreFeats(self.feat_maps[0].GetFeatures())/min(self.feat_maps[1].GetNumFeatures(),self.feat_maps[0].GetNumFeatures())
     self.test_score = self.feat_maps[1].ScoreFeats(self.feat_maps[0].GetFeatures())/self.feat_maps[0].GetNumFeatures()
 
-    if print_flag == True:
+    if self.print_flag == True:
       print(f'Test score: {self.test_score}')
       print(f'Test score normalized: {self.test_score_norm}')
 
