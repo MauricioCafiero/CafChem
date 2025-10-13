@@ -212,7 +212,7 @@ class evaluate_pharmacophore():
 
     return self.feat_lists, self.feat_maps
   
-  def get_feat_score(self):
+  def get_feat_score(self, print_flag = True):
     '''
       Calculates the pharmacophore feature score for the test molecule. 
       The score is normalized by the number of features in the known and test molecules.
@@ -226,8 +226,9 @@ class evaluate_pharmacophore():
     self.test_score_norm = self.feat_maps[1].ScoreFeats(self.feat_maps[0].GetFeatures())/min(self.feat_maps[1].GetNumFeatures(),self.feat_maps[0].GetNumFeatures())
     self.test_score = self.feat_maps[1].ScoreFeats(self.feat_maps[0].GetFeatures())/self.feat_maps[0].GetNumFeatures()
 
-    print(f'Test score: {self.test_score}')
-    print(f'Test score normalized: {self.test_score_norm}')
+    if print_flag == True:
+      print(f'Test score: {self.test_score}')
+      print(f'Test score normalized: {self.test_score_norm}')
 
     return self.test_score, self.test_score_norm
   
