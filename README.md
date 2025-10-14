@@ -21,6 +21,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
 - [MLP for Regression and Classification with PyTorch](#cafchemmlppytorch) <br>
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
+- [PCA and t-SNE analysis for data](#cafchemdecomp) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
@@ -40,6 +41,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 ## Quantum Chemistry 
 
 - [QM calculations with the UMA MLIP<sup>1</sup>](#cafchemqm_uma) <br>
+- [DFT calculations using Microsoft's Skala](#cafchemskala) <br>
 - [DFT and SAPT calculations using Psi4](#cafchempsi4) <br>
 
 ## LLMs for Medchem
@@ -118,6 +120,12 @@ import CafChem.CafChemPsi4 as ccp4
 - Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
 - Analyze data with confusion matrices.
 
+## CafChemDecomp
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/DecompositionAnalysis_CafChem.ipynb)
+- Calculate RDKit features for a set of molecules.
+- Use PCA or t-SNE to reduce feature dimensionality to 2 and view in a plot.
+- Spot groups/clusters in data.
+
 ## CafChemHFClassifier
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/BertClassifier_CafChem.ipynb)
 - Create a classifier model using HuggingFace.
@@ -155,6 +163,12 @@ import CafChem.CafChemPsi4 as ccp4
 - perform energy calculations, geometry optimizations, vibrational calculations, and thermodynamics calculations.
 - Calculate a reaction Gibbs, Enthalpy and Entropy.
 - Perform simple dynamics. (Langevin works, Velocity Verlet seems a bit buggy)
+
+## CafChemSkala
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/SkalaDFT_CafChem.ipynb)
+- Implements the Microsoft Skala DFT functional in ASE. Also includes LDA, PBE, and TPSS.
+- Includes several def2 basis sets.
+- Calculate energy, geometry, dipole, vibrational frequencies.
 
 ## CafChemPharm
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Pharmacophores_CafChem.ipynb)
