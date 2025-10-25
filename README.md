@@ -21,7 +21,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
 - [MLP for Regression and Classification with PyTorch](#cafchemmlppytorch) <br>
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
-- [PCA and t-SNE analysis for data](#cafchemdecomp) <br>
+- [PCA, t-SNE, and Autoviz analysis for data](#cafchemeda) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
 - [Chemeleon GNN foundation model finetuning](#cafchemeleon) <br>
@@ -120,11 +120,11 @@ import CafChem.CafChemPsi4 as ccp4
 - Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
 - Analyze data with confusion matrices.
 
-## CafChemDecomp
-- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/DecompositionAnalysis_CafChem.ipynb)
-- Calculate RDKit features for a set of molecules.
+## CafChemEDA
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/EDA_CafChem.ipynb)
+- Calculate RDKit or Mordred features, or fingerprints for a set of molecules.
 - Use PCA or t-SNE to reduce feature dimensionality to 2 and view in a plot.
-- Spot groups/clusters in data.
+- Perform autoviz analysis.
 
 ## CafChemHFClassifier
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/BertClassifier_CafChem.ipynb)
