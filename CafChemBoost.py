@@ -118,7 +118,7 @@ def scale_pca_split(f: np.array, y_raw: list, Xa: list, use_scaler = True,
       scaler: fitter scaler model
   '''
 
-  if type(y_raw[0]) != int:
+  if type(y_raw[0]) == str:
     unique_classes = set(y_raw)
     class_dict = {}
     for i,y_class in enumerate(unique_classes):
@@ -169,9 +169,13 @@ def scale_pca_split(f: np.array, y_raw: list, Xa: list, use_scaler = True,
   X_train, X_valid, ys_train, ys_valid = train_test_split(f_final,y_smiles,train_size=splits, 
                                                               random_state=seed, shuffle=True)
   
-  #separate target values and SMILES strings and change y values to ints    
-  y_train = ys_train[:,0].astype(int)
-  y_valid = ys_valid[:,0].astype(int)   
+  #separate target values and SMILES strings and change y values to ints
+  if type(y_raw[0]) == str:           
+    y_train = ys_train[:,0].astype(int)
+    y_valid = ys_valid[:,0].astype(int)   
+  else:
+    y_train = ys_train[:,0].astype(float)
+    y_valid = ys_valid[:,0].astype(float)
   smiles_train = ys_train[:,1]
   smiles_valid = ys_valid[:,1]
 
