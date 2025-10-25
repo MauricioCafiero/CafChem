@@ -16,6 +16,15 @@ import deepchem as dc
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.covariance import EllipticEnvelope
+from rdkit import Chem
+from rdkit.Chem import AllChem, Draw, Descriptors
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import os
+
 def featurize(smiles_list: list, y: list,
               ions_to_clean = ["[Na+].", ".[Na+]"], featurizer = "rdkit"):
   '''
