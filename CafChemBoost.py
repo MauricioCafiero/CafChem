@@ -364,14 +364,26 @@ class Boost_methods():
         best_model: best model
       '''
     if self.model_type == "XGBoost":
-      model = XGBRegressor()
-      modelname = "XGBoost"
+      if self.classifier_flag:
+        model = XGBClassifier()
+        modelname = "XGBoost Classifier"
+      else:
+        model = XGBRegressor()
+        modelname = "XGBoost Regressor"
     elif self.model_type == "LightGBM":
-      model = LGBMRegressor(metric='rmse', max_depth = -1, verbose = -1)
-      modelname = "LightGBM"
+      if self.classifier_flag:
+        model = LGBMClassifier(metric='logloss', max_depth = -1, verbose = -1)
+        modelname = "LightGBM Classifier"
+      else:
+        model = LGBMRegressor(metric='rmse', max_depth = -1, verbose = -1)
+        modelname = "LightGBM Regressor"
     elif self.model_type == "CatBoost":
-      model = CatBoostRegressor(verbose=False)
-      modelname = "CatBoost"
+      if self.classifier_flag:
+        model = CatBoostClassifier(verbose=False)
+        modelname = "CatBoost Classifier"
+      else:
+        model = CatBoostRegressor(verbose=False)
+        modelname = "CatBoost Regressor"
     else:
       raise ValueError("Model type must be 'XGBoost', 'LightGBM', or 'CatBoost'")
 
@@ -382,7 +394,7 @@ class Boost_methods():
         unique_classes = set(y_raw)
         class_dict = {}
         for i,y_class in enumerate(unique_classes):
-            class_dict[str(y_class)] = i
+          class_dict[str(y_class)] = i
             
         y = []
         for val in y_raw:
@@ -391,12 +403,12 @@ class Boost_methods():
       else:
         y = y_raw
     else:
-        y = y_raw
+      y = y_raw.astype(float)
         
     search_f = GridSearchCV(estimator = model,
                        param_grid = param_grid,
                        n_jobs=-1,
-                       cv=5)
+                       cv=cv)
 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
