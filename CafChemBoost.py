@@ -91,7 +91,7 @@ def featurize(smiles_list: list, y: list,
 
   return f, y, Xa
 
-def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
+def scale_pca_split(f: np.array, y_raw: list, Xa: list, use_scaler = True,
                     use_pca = False, pca_size = 100, seed = 42, splits = 0.9):
   '''
     receives feature array, target list and smiles list. Can perform scaling and/or 
@@ -117,7 +117,20 @@ def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
       pca: fitted pca model
       scaler: fitter scaler model
   '''
-  y = np.array(y)
+
+  if type(y_raw[0]) != int:
+    unique_classes = set(y_raw)
+    class_dict = {}
+    for i,y_class in enumerate(unique_classes):
+        class_dict[str(y_class)] = i
+        
+    y = []
+    for val in y_raw:
+        y.append(class_dict[val])
+    print('target converted to ints')
+  else:
+    y = y_raw
+
   Xa = np.array(Xa)
   y_smiles = np.stack((y,Xa),axis=1)
 
@@ -156,8 +169,9 @@ def scale_pca_split(f: np.array, y: list, Xa: list, use_scaler = True,
   X_train, X_valid, ys_train, ys_valid = train_test_split(f_final,y_smiles,train_size=splits, 
                                                               random_state=seed, shuffle=True)
   
-  y_train = ys_train[:,0]
-  y_valid = ys_valid[:,0]
+  #separate target values and SMILES strings and change y values to ints    
+  y_train = ys_train[:,0].astype(int)
+  y_valid = ys_valid[:,0].astype(int)   
   smiles_train = ys_train[:,1]
   smiles_valid = ys_valid[:,1]
 
