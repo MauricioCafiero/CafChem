@@ -403,7 +403,7 @@ class Boost_methods():
       else:
         y = y_raw
     else:
-      y = y_raw.astype(float)
+      y = [float(val) for val in y_raw]
         
     search_f = GridSearchCV(estimator = model,
                        param_grid = param_grid,
