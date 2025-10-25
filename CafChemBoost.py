@@ -351,7 +351,7 @@ class Boost_methods():
 
     return model, train_score, valid_score
 
-  def grid_search(self, model_type: str, X: list, y: list, param_grid: list, cv = 5):
+  def grid_search(self, X: list, y_raw: list, param_grid: list, cv = 5):
     '''
       Performs a grid search on the model.
       Args:
@@ -377,6 +377,20 @@ class Boost_methods():
 
     print("Performing grid search on: ",modelname)
 
+    if classifier_flag == True:
+      if type(y_raw[0]) == str:
+        unique_classes = set(y_raw)
+        class_dict = {}
+        for i,y_class in enumerate(unique_classes):
+            class_dict[str(y_class)] = i
+            
+        y = []
+        for val in y_raw:
+            y.append(class_dict[val])
+        print('target converted to ints')
+      else:
+        y = y_raw
+        
     search_f = GridSearchCV(estimator = model,
                        param_grid = param_grid,
                        n_jobs=-1,
