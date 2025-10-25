@@ -377,7 +377,7 @@ class Boost_methods():
 
     print("Performing grid search on: ",modelname)
 
-    if classifier_flag == True:
+    if self.classifier_flag == True:
       if type(y_raw[0]) == str:
         unique_classes = set(y_raw)
         class_dict = {}
