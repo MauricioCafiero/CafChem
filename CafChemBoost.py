@@ -390,6 +390,8 @@ class Boost_methods():
         print('target converted to ints')
       else:
         y = y_raw
+    else:
+        y = y_raw
         
     search_f = GridSearchCV(estimator = model,
                        param_grid = param_grid,
