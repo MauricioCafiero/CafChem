@@ -21,6 +21,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Regression and Classification with dense neural networks using TensorFlow](#cafchemskipdense) <br>
 - [MLP for Regression and Classification with PyTorch](#cafchemmlppytorch) <br>
 - [SciKitLearn Classifiers](#cafchemclassifiers) <br>
+- [Gradient Boosting Models](#cafchemboost) <br>
 - [PCA, t-SNE, and Autoviz analysis for data](#cafchemeda) <br>
 - [HuggingFace classifier models](#cafchemhfclassifier)<br>
 - [ChemProp GNN MPNN training and inference](#cafchemprop) <br>
@@ -119,6 +120,13 @@ import CafChem.CafChemPsi4 as ccp4
 - Load a CSV with quantitative data and create classes.
 - Tree-based models, Logistic Regression, Support Vector Machines, Ridge, MLP.
 - Analyze data with confusion matrices.
+
+## CafChemBoost
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Boost_CafChem.ipynb)
+- Featurize SMILES data with RDKit, Mordred or Fingerprints
+- Perform classification or regression.
+- XGBoost, LightGBM, and CatBoost.
+- Evaluate models.
 
 ## CafChemEDA
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/EDA_CafChem.ipynb)
