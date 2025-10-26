@@ -312,7 +312,7 @@ class Boost_methods():
         modelname = "XGBoost Regressor"
     elif self.model_type == "LightGBM":
       if self.classifier_flag:
-        model = LGBMClassifier(metric='logloss', max_depth = self.max_depth, verbose = -1, num_leaves = self.num_leaves, 
+        model = LGBMClassifier(metric='accuracy', max_depth = self.max_depth, verbose = -1, num_leaves = self.num_leaves, 
         feature_fraction = self.feature_fraction, min_data_in_leaf = self.min_data_in_leaf)
         modelname = "LightGBM Classifier"
       else:
