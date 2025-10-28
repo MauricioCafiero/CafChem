@@ -11,6 +11,7 @@
 - [Quick Linear Regression](#quick-linear-regression) <br>
 - [Correlation Heatmap from dataframe](#correlation-heatmap-from-dataframe) <br>
 - [Download files from Colab](#download-files-from-colab)
+- [Tools for working with images](#images)
 
 
 ## Using a text classifier from HuggingFace
@@ -267,6 +268,47 @@ files_to_download = [file for file in all_files if (os.path.splitext(file)[1]=="
 
 for file in files_to_download:
     files.download(file)
+```
+## Images
+```
+from skimage.io import imshow, imread, imsave
+from skimage.transform import resize
+
+import matplotlib.pyplot as plt
+import numpy as np
+%matplotlib inline 
+#only needed for a notebook
+
+def load_image(image_path):
+    img = imread(image_path)
+    return img
+
+def make_gallery(image_array, num_cols=3):
+
+    while len(image_array)%num_cols!=0:
+        print('cannot divide images provided into desired number of columns')
+        num_cols -= 1
+    
+    height, width, channels = image_array[0].shape
+    resized_images = [resize(img, (height, width, channels)) for img in image_array]
+
+    if isinstance(image_array, list):
+        image_array = np.array(resized_images)
+
+    n_index, height, width, channels = image_array.shape
+    n_rows = n_index // num_cols
+    gallery = (image_array.reshape(n_rows, num_cols, height, width, channels)
+               .swapaxes(1, 2).reshape(n_rows*height, num_cols*width, channels))
+
+    return gallery
+
+def display_image(image):
+    plt.figure(figsize=(10, 10))
+    plt.imshow(image)
+    plt.axis('off')
+
+def save_image(image, image_path):
+    imsave(image_path, image)
 ```
 
 
