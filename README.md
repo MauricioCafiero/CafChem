@@ -29,7 +29,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Build a dataset with active learning](#cafchemaldatabuild) <br>
 
 ## Protein / Ligand interactions
-
+- [Autodock Vina for any protein / any ligand](#cafchemautodockvina) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
 
@@ -153,6 +153,11 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AL_DataBuild_CafChem.ipynb)
 - Use active learning and a gaussian process regressor to build up a dataset to a desired accuracy.
 - export the dataset at the end.
+
+## CafChemAutoDockVina
+- [example notebook with metal](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AutoDockVina_CafChem.ipynb)
+- [example notebook no metal](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AutoDockVina_CafChem_nometal.ipynb)
+- Provide a smiles string or sdf or a ligand and a PDB for a proteins and perform docking
 
 ## CafChemReDock
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Rescore_Docking_UMA_CafChem.ipynb)
