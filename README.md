@@ -34,6 +34,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Autodock Vina for any protein / any ligand](#cafchemautodockvina) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+- [PDBFixer for preparing proteins](#cafchempdbfixer) <br>
 
 ## Protein Models
 - [AlphaFold2 - Colabfold version](#cafchemalphafold)
@@ -177,6 +178,12 @@ import CafChem.CafChemPsi4 as ccp4
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
 
+## CafChemPDBFixer
+- [example notebook] (https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PDBfixer_CafChem.ipynb)
+- use PDB fixer to prepare a PDB file for docking or MD
+- treats both proteins and ligands
+- use the output from this notebook to create PDBQT files with obabel.
+  
 ## CafChemAlphaFold
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AlphaFold2_CafChem.ipynb)
 - Colabfold version of Alphafold2, lightly adapted for CafChem.
