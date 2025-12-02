@@ -315,8 +315,8 @@ class embed_proteins():
     - a: index of first sequence
     - b: index of second sequence
     '''
-    v1 = embeddings[a].reshape(1,-1)
-    v2 = embeddings[b].reshape(1,-1)
+    v1 = self.embeddings[a].reshape(1,-1)
+    v2 = self.embeddings[b].reshape(1,-1)
 
     ov = cosine_similarity(v1,v2)
 
