@@ -1,7 +1,6 @@
-<img src="https://github.com/MauricioCafiero/MauricioCafiero.github.io/blob/main/images/comp_chem_2_small.jpg" height="200" align="left" style="height:240px">
-<br><br><br><br><br>
+<img src="https://github.com/MauricioCafiero/MauricioCafiero.github.io/blob/main/images/comp_chem_2_small.jpg" height="200" align="top" style="height:240px">
 
-# CafChem - Libraries for computational chemistry/drug design research. 
+# CafChem - Libraries for computational chemistry/drug design research.
 
 See below for sample notebooks for various computation and medicinal chemistry, machine learning and AI research tools.
 
