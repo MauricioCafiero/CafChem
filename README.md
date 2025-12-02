@@ -179,7 +179,7 @@ import CafChem.CafChemPsi4 as ccp4
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
 
 ## CafChemPDBFixer
-- [example notebook] (https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PDBfixer_CafChem.ipynb)
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PDBfixer_CafChem.ipynb)
 - use PDB fixer to prepare a PDB file for docking or MD
 - treats both proteins and ligands
 - use the output from this notebook to create PDBQT files with obabel.
