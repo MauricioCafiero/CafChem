@@ -1,4 +1,7 @@
-# CafChem - Libraries for computational chemistry/drug design research.
+<img src="https://github.com/MauricioCafiero/MauricioCafiero.github.io/blob/main/images/comp_chem_2_small.jpg" height="200" align="left" style="height:240px">
+<br><br><br><br><br>
+
+# CafChem - Libraries for computational chemistry/drug design research. 
 
 See below for sample notebooks for various computation and medicinal chemistry, machine learning and AI research tools.
 
@@ -32,6 +35,10 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Autodock Vina for any protein / any ligand](#cafchemautodockvina) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+
+## Protein Models
+- [AlphaFold2 - Colabfold version](#cafchemalphafold)
+- [ESMFold - Colabfold version](#cafchemesmfold)
 
 ## Medicinal Chemistry
 
@@ -169,6 +176,16 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Boltz_CafChem.ipynb)
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
+
+## CafChemAlphaFold
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AlphaFold2_CafChem.ipynb)
+- Colabfold version of Alphafold2, lightly adapted for CafChem.
+- Citations to original work in the notebook.
+
+## CafChemESMFold
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ESMFold_CafChem.ipynb)
+- Colabfold version of ESMfold, lightly adapted for CafChem.
+- Citations to original work in the notebook.
 
 ## CafChemQM_UMA
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/QuantumChem_UMA_CafChem.ipynb)
