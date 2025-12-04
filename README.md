@@ -34,6 +34,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Autodock Vina for any protein / any ligand](#cafchemautodockvina) <br>
 - [Docking with Autodock Vina, rescoring docking poses with Meta's UMA MLIP<sup>1</sup>](#cafchemredock) <br>
 - [Boltz2 for co-folding proteins and ligands](#cafchemboltz) <br>
+- [ODDT for molecule similarity and protein-ligand interactions](#cafchemoddt) <br>
 - [PDBFixer for preparing proteins](#cafchempdbfixer) <br>
 
 ## Protein Models
@@ -177,6 +178,11 @@ import CafChem.CafChemPsi4 as ccp4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Boltz_CafChem.ipynb)
 - Input a protein sequence and a list of SMILES strings.
 - Co-fold the protein/ligand pairs using [Boltz2](https://github.com/jwohlwend/boltz), extract the structures and predict IC50.
+
+## CafChemODDT
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ODDT_CafChem.ipynb)
+- Use various methods to compare molecules from SDFs
+- find all interactions between a protein (PDB file) and a ligand (SDF file)
 
 ## CafChemPDBFixer
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PDBfixer_CafChem.ipynb)
