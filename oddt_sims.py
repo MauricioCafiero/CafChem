@@ -262,10 +262,21 @@ class conformers():
     print(f'The overall best match is reference conformation {overall_tuple[0]} and test conformation {overall_tuple[1]}: {overall_score:.3f}')
     
     os.system(f'cp {self.ref_location}/{self.ref_base}_{overall_tuple[0]}.sdf {self.ref_base}_{overall_tuple[0]}_{self.sdf_base}_{overall_tuple[1]}_REF.sdf')
-    os.system(f'cp {self.sdf_location}/{self.sdf_base}_{overall_tuple[0]}.sdf {self.ref_base}_{overall_tuple[0]}_{self.sdf_base}_{overall_tuple[1]}_TEST.sdf')
+    os.system(f'cp {self.sdf_location}/{self.sdf_base}_{overall_tuple[1]}.sdf {self.ref_base}_{overall_tuple[0]}_{self.sdf_base}_{overall_tuple[1]}_TEST.sdf')
 
+    suppl = Chem.SDMolSupplier(f'{self.ref_base}_{overall_tuple[0]}_{self.sdf_base}_{overall_tuple[1]}_REF.sdf'')
+    for mol in suppl:
+      ref_mol = mol
+    
+    suppl = Chem.SDMolSupplier(f'{self.ref_base}_{overall_tuple[0]}_{self.sdf_base}_{overall_tuple[1]}_TEST.sdf'')
+    for mol in suppl:
+      test_mol = mol
+    
+    mols_to_print = [ref_mol, test_mol]
+    legends = ['Reference', 'Test']
+    img = Draw.MolsToGridImage(mols_to_print, legends = legends, molsPerRow=2, subImgSize=(200,200))
 
-    return best_list
+    return best_list, img
 
   
   
