@@ -47,6 +47,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Pharmacophore feature testing](#cafchempharm) <br>
 - [Pharmacokinetic Properties](#cafchempk) <br>
 - [Find bioactive molecules on Chembl](#cafchembl) <br>
+- [Fingerprints, filters, distances](#cafchemskfp) <br>
 
 ## Quantum Chemistry 
 
@@ -232,6 +233,11 @@ import CafChem.CafChemPsi4 as ccp4
 - query Uniprot for protein IDs
 - query Chembl for bioactive molecules for the desired protein.
 
+## CafChemSKFP
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/SKFP_CafChem.ipynb)
+- generate 2D and 3D features/fingerprints for molecules.
+- apply molecule filters
+- perform distance calculations between molecules.
 
 ## CafChemPsi4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
