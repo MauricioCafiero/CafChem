@@ -42,6 +42,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [ESMFold - Colabfold version](#cafchemesmfold)
 - [Protein masking and embedding](#cafchemproteinmaskembed)
 - [Protein GPT training and finetuning](#cafchemproteingpt)
+- [Finetune ESM protein models](#cafchemesm)
 
 ## Medicinal Chemistry
 
@@ -214,7 +215,7 @@ import CafChem.CafChemPsi4 as ccp4
 - generate novel proteins with GPT models
 
 ## CafChemESM
-- [example notebook]()
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ESMTuning_CafChem.ipynb)
 - Finetune the ESM models on various tasks
 
 ## CafChemQM_UMA
