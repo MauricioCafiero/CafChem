@@ -169,6 +169,8 @@ import CafChem.CafChemPsi4 as ccp4
 ## CafChemAutoDockVina
 - [example notebook with metal](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AutoDockVina_CafChem.ipynb)
 - [example notebook no metal](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AutoDockVina_CafChem_nometal.ipynb)
+- [example notebook with Quickrun](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/AutoDockVina_AnnaQuickRun_CafChem.ipynb)
+  (requires a pre-prepared protein PDBQT for the quickrun)
 - Provide a smiles string or sdf or a ligand and a PDB for a proteins and perform docking
 
 ## CafChemReDock
