@@ -53,6 +53,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 
 ## Quantum Chemistry 
 
+- [QM calculations with PySCF](#cafchempyscf) <br>
 - [QM calculations with the UMA MLIP<sup>1</sup>](#cafchemqm_uma) <br>
 - [DFT calculations using Microsoft's Skala](#cafchemskala) <br>
 - [DFT and SAPT calculations using Psi4](#cafchempsi4) <br>
@@ -219,6 +220,11 @@ import CafChem.CafChemPsi4 as ccp4
 ## CafChemESM
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/ESMTuning_CafChem.ipynb)
 - Finetune the ESM models on various tasks
+
+## CafChemPySCF
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/PySCF_CafChem.ipynb)
+- Run HF, DFT, MP2 and CCSD(T) calculations
+- Implicit solvent, TDDFT, Molecular Dynamics
 
 ## CafChemQM_UMA
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/QuantumChem_UMA_CafChem.ipynb)
