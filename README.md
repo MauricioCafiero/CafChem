@@ -50,6 +50,7 @@ See below for sample notebooks for various computation and medicinal chemistry, 
 - [Pharmacokinetic Properties](#cafchempk) <br>
 - [Find bioactive molecules on Chembl](#cafchembl) <br>
 - [Fingerprints, filters, distances](#cafchemskfp) <br>
+- [Find targets for a disease](#cafchemtargets) <br>
 
 ## Quantum Chemistry 
 
@@ -258,6 +259,10 @@ import CafChem.CafChemPsi4 as ccp4
 - generate 2D and 3D features/fingerprints for molecules.
 - apply molecule filters
 - perform distance calculations between molecules.
+
+## CafChemTargets
+- [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/OpenTargets_CafChem.ipynb)
+- Query Open Targets for proteins targets for a disease.
 
 ## CafChemPsi4
 - [example notebook](https://github.com/MauricioCafiero/CafChem/blob/main/notebooks/Psi4_CafChem.ipynb)
