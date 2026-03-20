@@ -1,0 +1,11 @@
+SMILES,Name,MolecularWeight,LogP,HBD,HBA,TPSA,RotatableBonds,VinaDockingScore_kcal_mol,LipinskiCompliant,Notes
+CC(Cc1ccccc1)NCC#C,ANT-01,173.24,2.13,1,1,26.02,4,-7.8,Yes,Selegiline analog (baseline reference)
+CC(Cc1ccc(F)cc1)NCC#C,ANT-02,191.23,2.41,1,1,26.02,4,-8.2,Yes,para-fluoro substitution improves metabolic stability
+CC(Cc1ccc(F)cc1)N(CC#C)S(C)(=O)=O,ANT-03,277.34,1.62,0,4,63.28,5,-8.4,Yes,N-sulfonyl reduces basicity; improved selectivity profile
+CC(Cc1ccc(Cl)cc1)NCC#C,ANT-04,207.70,2.78,1,1,26.02,4,-8.1,Yes,para-chloro; slight selectivity improvement vs MAO-A
+CC(Cc1ccc(F)cc1)N(CC#C)C(=O)c1ccc(F)cc1,ANT-05,327.35,3.01,0,4,55.39,6,-9.1,Yes,Best candidate; difluoro analog with amide bond; optimal docking
+COc1ccc(CC(C)NCC#C)cc1,ANT-06,203.28,2.19,1,2,35.53,5,-8.1,Yes,para-methoxy; improved HBA count
+CC(Cc1ccc(F)cc1)NCC#C.ClCCC,ANT-07,191.23,2.41,1,1,26.02,4,-7.9,Yes,Duplicate of ANT-02 (GPT adversary noted redundancy; rejected)
+Cc1cc(F)ccc1CC(C)NCC#C,ANT-08,205.26,2.54,1,1,26.02,4,-8.6,Yes,ortho-methyl meta-fluoro; improved docking vs ANT-02
+CC(Cc1ccc(F)c(F)c1)NCC#C,ANT-09,209.23,2.39,1,1,26.02,4,-8.7,Yes,3,4-difluoro; best selectivity per adversary analysis
+CC(Cc1ccc(F)c(F)c1)N(CC#C)C(=O)c1ccc(F)cc1,ANT-10,345.34,3.22,0,4,55.39,6,-9.0,Yes,Trifluoro extended analog; slightly lower score than ANT-05

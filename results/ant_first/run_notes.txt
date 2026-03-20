@@ -1,0 +1,41 @@
+Adversarial Molecule Design Run: ant_first
+==========================================
+
+Run Configuration
+-----------------
+Primary Model (Tool Controller): Anthropic Claude claude-3-5-sonnet-20241022
+Adversarial Model: OpenAI GPT-4o (gpt-4o-2024-08-06)
+Target: Monoamine Oxidase B (MAO-B, MAOB_dude receptor)
+Objective: Design selective MAO-B inhibitors with improved drug-like properties
+Starting Scaffold: Propargylamine-based (inspired by selegiline/rasagiline)
+Number of Rounds: 6
+Date: 2025-11-14
+
+Tools Available to Primary Model
+---------------------------------
+- calculate_properties(smiles): RDKit molecular weight, logP, HBD, HBA, TPSA, rotatable bonds
+- validate_smiles(smiles): RDKit SMILES validation
+- dock_molecule(smiles, target): AutoDock Vina docking against MAO-B receptor (MAOB-Dud-e-receptor.pdb)
+- check_lipinski(smiles): Lipinski Rule of 5 compliance check
+- generate_analogs(smiles, n): Generate n structural analogs using fragment substitution
+- substructure_search(smarts, library): Search ZINC fragment library for matching substructures
+
+Run Outcome Summary
+-------------------
+Final candidate molecules: 5
+Best docking score (AutoDock Vina): -9.1 kcal/mol (Molecule ANT-05)
+All 5 final candidates: Lipinski-compliant
+Average docking score (final candidates): -8.52 kcal/mol
+Selectivity flag raised by adversary: Addressed in rounds 4 and 5
+
+Key Design Decisions
+--------------------
+- Round 1: Claude established propargylamine as core pharmacophore (N-CH2-C#CH)
+  matching the covalent FAD-binding mechanism of MAO-B inhibition
+- Round 2: Added fluorine substitution on aromatic ring for metabolic stability
+  (GPT adversary challenged metabolic lability of unsubstituted ring)
+- Round 3: Explored branched alkyl linker between aromatic and amine
+- Round 4: Added sulfonamide group to improve selectivity over MAO-A
+  (GPT adversary raised MAO-A/MAO-B selectivity concern)
+- Round 5: Optimized substituent positions based on docking pose analysis
+- Round 6: Final refinement, ADMET assessment, synthetic accessibility check

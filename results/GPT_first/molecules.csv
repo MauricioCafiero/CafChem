@@ -1,0 +1,11 @@
+SMILES,Name,MolecularWeight,LogP,HBD,HBA,TPSA,RotatableBonds,VinaDockingScore_kcal_mol,LipinskiCompliant,Notes
+O=C(/C=C/c1ccc(F)cc1)c1ccc(N)cc1,GPT-01,243.26,2.81,1,3,69.67,4,-6.9,Yes,Aminochalcone; explored as non-covalent MAO-B binder; poor docking
+c1ccc2c(c1)CC(NCC#C)C2,GPT-02,185.26,2.14,1,1,26.02,3,-8.3,Yes,Best candidate; indanamine-propargyl; rasagiline-like; excellent score
+Nc1ccc(CNC(=O)c2ccncc2)cc1,GPT-03,241.29,1.22,2,4,75.62,5,-7.5,Yes,Pyridinyl amide; introduced for HBA network; moderate docking
+O=C(NCc1ccccc1)c1ccncc1,GPT-04,212.25,1.73,1,3,58.00,4,-7.3,Yes,Simplified pyridine amide; lost the amine moiety; sub-optimal
+c1ccc2c(c1)CC(N(CC#C)S(=O)(=O)c1ccc(F)cc1)C2,GPT-05,355.42,3.08,0,5,73.45,4,-7.9,Yes,Indanamine + 4-F-benzenesulfonyl + propargyl; complex synthesis
+CCc1ccc(CC2CCc3ccccc32)cc1,GPT-06,276.38,5.08,0,3,0.00,4,-7.1,No,High logP (5.08); fails Lipinski; deprioritized
+c1ccc2c(c1)CC(NC(=O)c1ccc(F)cc1)C2,GPT-07,283.32,2.47,1,3,55.39,3,-8.0,Yes,Indanamine with 4-F-benzamide; explored but lacks propargyl FAD anchor
+c1ccc2c(c1)CC(NCC#C)C2,GPT-08,185.26,2.14,1,1,26.02,3,-8.3,Yes,Duplicate of GPT-02 (tool called twice; same molecule)
+Nc1cccc(CC2CCc3ccccc32)c1,GPT-09,251.37,3.86,1,1,26.02,3,-7.6,Yes,Meta-amino indanamine; slightly worse docking than GPT-02
+c1ccc2c(c1)CC(N(CC#C)C(=O)c1ccc(F)cc1)C2,GPT-10,335.39,3.42,0,4,55.39,4,-8.1,Yes,Indanamine + N-acyl + propargyl; approached but below ANT-05 docking score
