@@ -12,6 +12,7 @@
 - [Correlation Heatmap from dataframe](#correlation-heatmap-from-dataframe) <br>
 - [Download files from Colab](#download-files-from-colab)
 - [Tools for working with images](#images)
+- [Slow print](#slow-print)
 
 
 ## Using a text classifier from HuggingFace
@@ -311,4 +312,14 @@ def save_image(image, image_path):
     imsave(image_path, image)
 ```
 
+## Slow Print
+
+```
+import time
+
+def print_slow(slow_string):
+    for char in slow_string:
+        print(char,end='',flush=True)
+        time.sleep(0.1)
+```
 
