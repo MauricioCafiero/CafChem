@@ -817,6 +817,7 @@ def rescoring (df_raw, ref_col: str, comp_col: str, step_size: int, asc_flag: bo
   accuracy = number_correct/total_number
   return accuracy, img
 
+
 def ligand_relaxation(filename_base: str, target_obj: str, calculator: FAIRChemCalculator,
                     charge: int, spin: int):
   '''
